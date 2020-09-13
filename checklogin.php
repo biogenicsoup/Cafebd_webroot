@@ -23,17 +23,20 @@
 	$myusername = mysqli_real_escape_string($con, $myusername);
 	$mypassword = mysqli_real_escape_string($con, $mypassword);
 
-	$query="SELECT * FROM login WHERE username='" . $myusername . "' and password='" . $mypassword . "'";
+	$sql = "SELECT * FROM login WHERE name=? and password=?";
+	$result = prepared_select($con, $sql, [$myusername, $mypassword])->fetch_all(MYSQLI_ASSOC);
+
+	//$query="SELECT * FROM login WHERE name='" . $myusername . "' and password='" . $mypassword . "'";
 	//echo $query . "<br>";
-	$result=mysqli_query($con, $query);
+	//$result=mysqli_query($con, $query);
 
 	// Mysql_num_row is counting table row
-	$count=mysqli_num_rows($result);
+	//$count=mysqli_num_rows($result);
 	// If result matched $myusername and $mypassword, table row must be 1 row
 
-	if($count==1)
+	if(count($result)==1)
 	{
-		// Register $myusername, $mypassword and redirect to file 'oversigt.php'
+		// Register $myusername, $mypassword and redirect to file 'suites.php'
 		$_SESSION['myusername'] = $myusername;
 		$_SESSION['mypassword'] = $mypassword;
 
@@ -43,7 +46,7 @@
 		//}
 		//else
 		//{
-			header('location:oversigt.php');
+			header('location:suites.php');
 		//}
 	}
 	else 

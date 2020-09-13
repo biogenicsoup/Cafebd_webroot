@@ -15,28 +15,20 @@ $pagename = "Region Midtjylland";
 //----------------- main content -------------------//
 echo "<br>";
 
+$sql = "SELECT s.id, s.name, s.description FROM Suite s ORDER BY s.id ASC";
 
-
-
-$query = "SELECT s.id, s.name, s.description FROM Suite s ORDER BY s.id ASC";
-
-$result=mysqli_query($con, $query);
-if (!$result)
-{
-	die('SELECT FROM CafeBD failed: ' . mysqli_error($con));
-}
+$suite_list = prepared_select($con, $sql, [])->fetch_all(MYSQLI_ASSOC);
+//$stmt = prepared_query($con, $sql, []);
+//$suite_list = $stmt->get_result()->fetch_assoc();
 
 echo "<i> Aktive suiter</i> <br><br>";
-echo "<table width='80%'>\n";
-echo "<tr height='60'> <td width='10%'> </td> 
-						   <td> <h2> Navn </h2></td> 
-						   <td > <h2 > Beskrivelse </h2></td> 
-						   <tr>";
+echo "<table >\n";
+echo "<tr height='60'><td><h2> Navn </h2></td><td><h2> Beskrivelse </h2></td></tr>";
 
-while($row = mysqli_fetch_array($result))
+foreach ($suite_list as $row)
 {
-	echo "\t<td><b><a href=\"showSuite.php?id=" . $row['id'] . "\">" . $row['name'] . " " . $row['description'] . "</a></b></td>\n";
-	echo "</tr>\n";
+	//echo "row = " . $row;
+	echo "\t<tr><td><b><a href=\"showSuite.php?id=" . $row['id'] . "\">" . $row['name'] . " " . $row['description'] . "</a></b></td></tr>\n";
 }
 echo "</table>";
 
