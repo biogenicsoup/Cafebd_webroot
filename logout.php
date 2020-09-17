@@ -1,8 +1,7 @@
-<?php error_reporting (E_ALL ^ E_NOTICE);
-	session_start();
-	include 'header.php';
-	
-	//----------------- main content -------------------//
+<?php
+include 'defaults.php';
+include 'session.php';
+include 'header.php';
 
 	session_destroy();
 	echo "<table>";

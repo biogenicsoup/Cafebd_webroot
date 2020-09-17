@@ -17,11 +17,9 @@ if (isset($_GET['pagereload']))
 
 if (!$loggedin)
 {
-    include 'header.php';
     echo "<br>";
-    echo "<i> Du er ikke logget ind og kan ikke oprette/redigere personer! </i><br>";
+    echo "<i> Du er ikke logget ind og kan ikke oprette/redigere autotest data! </i><br>";
     echo "<a href='index.php'>Log ind</a>";
-    include 'footer.php';
     exit();
 }
 ?>

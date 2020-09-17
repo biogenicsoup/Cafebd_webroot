@@ -23,17 +23,20 @@ unset($host, $db, $user, $pass, $charset); // we don't need them anymore
 function prepared_query($mysqli, $sql, $params, $types = "")
 {
     //echo "sql = " . $sql . "\n";
-    //echo "params = " . $params . "\n";
-    //echo "types = " . $types . "\n";
+    //echo "params = " . var_dump($params) . "\n";
+    //echo "types = " . var_dump($types) . "\n";
     //echo "count(params) = " . count($params) . "\n";
     $types = $types ?: str_repeat("s", count($params));
+    //var_dump($mysqli);
+    //var_dump($types);
     $stmt = $mysqli->prepare($sql);
     if (count($params) > 0)
     {
         $stmt->bind_param($types, ...$params);
     }
-
+    //var_dump($stmt);
     $stmt->execute();
+    //var_dump($stmt);
     return $stmt;
 }
 
