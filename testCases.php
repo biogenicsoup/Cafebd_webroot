@@ -6,7 +6,7 @@ $pagename = "Region Midt: TestCases";
 include 'defaults.php';
 include 'session.php';
 include 'header.php';
-include 'pagebanner.php';
+include 'banner.php';
 include 'connect.php';
 
 /**
@@ -30,11 +30,11 @@ echo "<i>Testcases</i><br><br>
 foreach ($testCase_list as $row)
 {
     echo "\t<tr>
-                <td><b><a href=\"suite.php?id=" . $row['id'] . "\">" . $row['name'] . "</a></b></td>
-                <td><b><a href=\"suite.php?id=" . $row['id'] . "\">" . $row['description'] . "</a></b></td>
-                <td><b><a href=\"suite.php?id=" . $row['id'] . "\">" . $row['scriptVersion'] . "</a></b></td>
-                <td><b><a href=\"suite.php?id=" . $row['id'] . "\">" . $row['testRailId'] . "</a></b></td>
-                <td><b><a href=\"suite.php?id=" . $row['id'] . "\">" . $row['testType'] . "</a></b></td>
+                <td><b><a href=\"Page_testCase.php?id=" . $row['id'] . "\">" . $row['name'] . "</a></b></td>
+                <td><b><a href=\"Page_testCase.php?id=" . $row['id'] . "\">" . $row['description'] . "</a></b></td>
+                <td><b><a href=\"Page_testCase.php?id=" . $row['id'] . "\">" . $row['scriptVersion'] . "</a></b></td>
+                <td><b><a href=\"Page_testCase.php?id=" . $row['id'] . "\">" . $row['testRailId'] . "</a></b></td>
+                <td><b><a href=\"Page_testCase.php?id=" . $row['id'] . "\">" . $row['testType'] . "</a></b></td>
             </tr>\n";
 }
 echo "</table>";
@@ -44,7 +44,7 @@ echo "<INPUT TYPE='submit' VALUE='Opret suite'>";
 echo "</FORM>";
 echo "<br>";
 
-echo "<FORM METHOD='post' ACTION='testCase.php'>";
+echo "<FORM METHOD='post' ACTION='Page_testCase.php'>";
 echo "<INPUT TYPE='submit' VALUE='Opret testcase'>";
 echo "</FORM>";
 

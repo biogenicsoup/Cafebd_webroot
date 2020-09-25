@@ -66,7 +66,7 @@ echo "
             </div>
           </div>
           <div class='float-right'>
-            <div class='make_appo'> <a class='btn white_btn' href='testCase.php'>Ny testcase</a> </div>
+            <div class='make_appo'> <a class='btn white_btn' href='Page_testCase.php'>Ny testcase</a> </div>
           </div>
         </div>
       </div>
@@ -100,9 +100,9 @@ echo "
                     <li><a href='engage.php'>Services Detail</a></li>
                   </ul>
                 </li>
-                <li> <a href='suites.php'>AutotestData</a>
+                <li> <a href='Page_suites.php'>AutotestData</a>
                   <ul>
-                    <li><a href='suites.php'>Suites</a></li>
+                    <li><a href='Page_suites.php'>Suites</a></li>
                     <li><a href='testCases.php'>Testcases</a></li>
                   </ul>
                 </li>
@@ -125,7 +125,9 @@ echo "
       </div>
     </div>
   </div>
-  <!-- header bottom end -->
+  <!-- header bottom end --> 
+  <script src='https://code.jquery.com/jquery-1.12.4.js'></script>
+<script src='https://code.jquery.com/ui/1.12.1/jquery-ui.js'></script>
 </header>
 <!-- end header -->
 ";

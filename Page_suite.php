@@ -7,7 +7,7 @@ $pagename = "Region Midt: Suite";
 include 'defaults.php';
 include 'session.php';
 include 'header.php';
-include 'pagebanner.php';
+include 'banner.php';
 include 'connect.php';
 
 
@@ -84,18 +84,18 @@ if($suitename == "")
 
 
 // show editable Suite info
-echo "<form name='edit' method='post' action='suite.php?id=" . $suiteId ."'>
+echo "<form name='edit' method='post' action='Page_suite.php?id=" . $suiteId ."'>
         <table width='300' border='0' cellpadding='0' cellspacing='1' bgcolor='#CCCCCC'>
             <tr>
                 <td>
                     <table width='100%' border='0' cellpadding='3' cellspacing='1' bgcolor='#FFFFFF'>
                         <tr>
                             <td width='78'>Navn på Suiten:</td>
-                            <td width='294'><input name='name' type='text' id='name' value='".$suitename."'></td>
+                            <td width='294'><input class='field_custom' name='name' type='text' id='name' value='".$suitename."'></td>
                         </tr>
                         <tr>
                             <td>Beskrivelse:</td>
-                            <td><textarea name='description' id='description' rows='5' cols='40'>".$suitedescription."</textarea></td>
+                            <td><textarea name='description' class='field_custom' id='description' rows='5' cols='40'>".$suitedescription."</textarea></td>
                         </tr>
                     </table>
                 </td>

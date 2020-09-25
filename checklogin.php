@@ -36,7 +36,7 @@
 
 	if(count($result)==1)
 	{
-		// Register $myusername, $mypassword and redirect to file 'suites.php'
+		// Register $myusername, $mypassword and redirect to file 'Page_suites.php'
 		$_SESSION['myusername'] = $myusername;
 		$_SESSION['mypassword'] = $mypassword;
 
@@ -46,7 +46,7 @@
 		//}
 		//else
 		//{
-			header('location:suites.php');
+			header('location:Page_suites.php');
 		//}
 	}
 	else 

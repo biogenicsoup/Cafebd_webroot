@@ -7,7 +7,7 @@ $pagename = "Region Midt: Teamet";
 include 'defaults.php';
 include 'session.php';
 include 'header.php';
-include 'pagebanner.php';
+include 'banner.php';
 include 'connect.php';
 
 echo "

@@ -10,8 +10,8 @@
 	3.  BASIC
     4.  LOADER
 	5.  HEADER
-	      - Header Top 
-	      - Menu 
+	      - Header Top
+	      - Menu
 	      - Search Bar
 	      - Side Menu
 		  - Fix Header
@@ -30,13 +30,13 @@
 	11. INNER PAGE BANNER
 	12. SIDEBAR
 	     - Sidebar Search
-	13. BLOG	
-         - Blog Detail	
+	13. BLOG
+         - Blog Detail
 	14. CASE STUDIES
 	15. SHOP
     16. FOOTER
 	17. CUSTOM
-		
+
 	-------------------------------------------------------------------*/
 
 
@@ -83,7 +83,7 @@ body {
 }
 
 body.demos .section {
-	background: url(images/bg.png) repeat top center #f2f3f5;
+	background: url(../images/gradian_blue.png) repeat top center #f2f3f5;
 }
 
 body.demos .section-title img {
@@ -230,7 +230,8 @@ button.btn {
 	text-transform: uppercase;
 	margin-top: 10px;
 	color: #fff;
-	border: solid transform 1px;
+	border: solid;
+	/*transform: 1px;*/
 	text-shadow: 1px 1px 3px rgba(0, 0, 0, .5);
 	position: relative;
 	font-family: 'Poppins', sans-serif;
@@ -258,6 +259,7 @@ a.btn.white_btnbutton.btn.white_btn,
 a.btn.white_btn {
 	background: #fff;
 	padding: 0 50px;
+	border: none;
 }
 
 .btn.sqaure_bt i {
@@ -1450,7 +1452,7 @@ div#pallax_slider {
 }
 
 .dott_star {
-	background-image: url('../images/star_dots.png');
+	/*background-image: url('../images/star_dots.png');*/
 	width: 100%;
 	background-position: center center;
 	height: 100%;
@@ -1463,7 +1465,7 @@ div#pallax_slider {
 }
 
 .clouds {
-	background-image: url('../images/claud.png');
+	/*background-image: url('../images/claud.png');*/
 	width: 100%;
 	background-position: center center;
 	height: 100%;
@@ -1505,7 +1507,7 @@ div#pallax_slider {
 }
 
 .blue_layer_bottom {
-	background-image: url('../images/blue_layer_bottom.png');
+	/*background-image: url('../images/blue_layer_bottom.png');*/
 	height: 132px;
 	width: 100%;
 	background-position: center bottom;
@@ -1520,7 +1522,7 @@ div#pallax_slider {
 }
 
 body.light_blue #full_slider.full_slider_inner {
-	background: url('../images/star_bg2.png');
+	/*background: url('../images/star_bg2.png');*/
 	background-size: cover;
 }
 
@@ -1598,7 +1600,7 @@ body.light_blue #full_slider.full_slider_inner {
 section.quality_ser_bg {
 	background-repeat: repeat-x !important;
 	background-position: bottom center !important;
-	background: url(../images/bg_patter_1.png);
+	background: url(../images/gradian_blue.png);
 }
 
 .about_info {
@@ -1620,7 +1622,7 @@ section.quality_ser_bg {
 section.dottad_star_bg {
 	background-repeat: no-repeat !important;
 	background-position: bottom right !important;
-	background-image: url('../images/gray_dotts.png');
+	/*	background-image: url('../images/gray_dotts.png');*/
 }
 
 #subscribe_form input {
@@ -1642,7 +1644,7 @@ section.dottad_star_bg {
 
 .grow_business {
 	background-position: right bottom !important;
-	background: url(../images/bg_patter_2.png);
+	/*background: url(../images/bg_patter_2.png);*/
 	background-repeat: no-repeat;
 }
 
@@ -2025,7 +2027,7 @@ section.dottad_star_bg {
 }
 
 .stars_dottat {
-	background: url('../images/star_dots.png');
+	/*background: url('../images/star_dots.png');*/
 }
 
 .only_parallax {
@@ -2385,140 +2387,62 @@ span.skill {
 /*------------------------------------------------------------------
 		9. ACCORDION
 	-------------------------------------------------------------------*/
-
-#accordion {
-	margin: 15px 0 0 0;
-	padding: 0;
-}
-
-#accordion .panel.panel-default {
-	border: none;
-	border-radius: 0;
-	margin: 0 0 16px 0;
-	box-shadow: none;
-	background: transparent;
-	float: left;
+.ui-accordion{
+	float:left;
 	width: 100%;
+	/*margin: 5px 25px 5px 5px;*/
 }
 
-#accordion .panel.panel-default .panel-heading {
-	border: none;
-	background: transparent;
-	border-radius: 0;
-	min-height: 50px;
-	padding: 0;
-	float: left;
+.ui-accordion .ui-accordion-header {
+	/*display: block;*/
+	/*cursor: pointer;*/
+	/*position: relative;*/
+	margin: 5px 20px 5px 20px;
+	padding: 1em .7em 1.5em .7em;
+	/*min-height: 0; *//* support: IE7 */
+	font-size: 100%;
+	border: solid #e4e4e4 1px;
+	background: #fff;
+	color: #777;
+	/*float:left;*/
 	width: 100%;
+	height: 50px;
 }
 
-#accordion .panel-collapse {
-	float: left;
-	width: 100%;
-}
-
-#accordion .panel.panel-default .panel-heading p a[aria-expanded="true"],
-#accordion .panel.panel-default:nth-child(1) .panel-heading p a {
+.ui-accordion  .ui-accordion-header.ui-state-active {
 	background: #17a5e9;
 	border-color: #17a5e9;
 	color: #fff;
-}
+	}
 
-#accordion .panel.panel-default .panel-heading p a[aria-expanded="true"] i,
-#accordion .panel.panel-default:nth-child(1) .panel-heading p a i {
-	color: #fff !important;
-}
-
-#accordion .panel.panel-default .panel-heading p a[aria-expanded="true"] i.fa-angle-down,
-#accordion .panel.panel-default:nth-child(1) .panel-heading p a i.fa-angle-down {
-	transform: rotate(180deg);
-	transition: ease all 0.5s;
-}
-
-#accordion .panel.panel-default .panel-heading p a,
-#accordion .panel.panel-default .panel-heading p a[aria-expanded="false"] {
-	border: solid #e4e4e4 1px;
-	background: #fff;
-	border-radius: 0;
-	min-height: 50px;
-	padding: 17px 25px 15px;
-}
-
-#accordion .panel.panel-default .panel-heading p a[aria-expanded="false"] {
-	color: #000 !important;
-}
-
-#accordion .panel.panel-default .panel-heading p a[aria-expanded="false"] i {
-	color: #17a5e9 !important;
-}
-
-#accordion .panel.panel-default .panel-heading p a[aria-expanded="false"] i.fa-angle-down {
-	color: #000 !important;
-}
-
-#accordion .panel.panel-default .panel-heading p {
-	font-size: 15px;
-}
-
-#accordion .panel.panel-default .panel-body {
-	border: none;
-	padding: 0 25px;
-	margin: 15px 0 0 0;
-	box-shadow: none;
-	height: auto;
-}
-
-#accordion .panel.panel-default .panel-body p {
-	margin-bottom: 0;
-	font-size: 14px;
-	line-height: 24px;
-}
-
-#accordion .panel.panel-default .panel-heading p a {
-	float: left;
+.ui-accordion .ui-accordion-content {
+	overflow: auto;
 	width: 100%;
-	font-weight: 500;
-	position: relative;
+	background-color: #fff; /*#f3f3f3;*/
+	color: #777;
+	font-size: 10pt;
+	line-height: 16pt;
+	/*margin: 5px 20px 5px 30px;*/
+	/*min-height: 50px;*/
 }
 
-#accordion .panel.panel-default .panel-heading p a i.fa-angle-down {
-	float: right;
-	color: #000;
+.ui-accordion .ui-accordion-content > * {
 	margin: 0;
+	padding: 30px;
 }
 
-#accordion .panel.panel-default .panel-heading p a>i {
-	font-size: 20px;
-	color: #17a5e9;
-	margin: 0 10px 0 0;
+.ui-accordion .iconOpen {
+	background:url('http://i.stack.imgur.com/vNQ2g.png?s=64&g=1') no-repeat;
+	background-size:20px;
+	width:20px;
+	height:20px;
 }
-
-.without_border #accordion .panel.panel-default .panel-heading p a,
-.without_border #accordion .panel.panel-default .panel-heading p a[aria-expanded="false"] {
-	border: none;
-	background: #fff;
-	border-radius: 0;
-	min-height: 50px;
-	padding: 15px 0 12px;
+.ui-accordion .iconClosed {
+	background:url('http://i.stack.imgur.com/vNQ2g.png?s=64&g=1') no-repeat -5px;
+	background-size:30px;
+	width:20px;
+	height:20px;
 }
-
-.without_border #accordion .panel.panel-default .panel-heading p a[aria-expanded="true"] i,
-.without_border #accordion .panel.panel-default:nth-child(1) .panel-heading p a i {
-	color: #000 !important;
-}
-
-.without_border #accordion .panel.panel-default .panel-heading p a[aria-expanded="true"],
-.without_border #accordion .panel.panel-default:nth-child(1) .panel-heading p a {
-	color: #000 !important;
-}
-
-.without_border #accordion .panel.panel-default .panel-heading p a[aria-expanded="false"] {
-	color: #000 !important;
-}
-
-.without_border #accordion .panel.panel-default .panel-heading p a>i {
-	color: #000 !important;
-}
-
 
 /*------------------------------------------------------------------
 		10. PRICE TABLE
@@ -2641,7 +2565,7 @@ span.skill {
 }
 
 .mechanic .price_table_active .price_head {
-	background: url('../images/mechanic_service/slide4.jpg');
+	/*background: url('../images/mechanic_service/slide4.jpg');*/
 	background-size: cover;
 }
 
@@ -2652,7 +2576,7 @@ span.skill {
 
 #default_theme .banner_slider {
 	min-height: 270px;
-	background-image: url('../images/inner_banner_bg.png');
+	/*background-image: url('../images/inner_banner_bg.png');*/
 	background-position: center center;
 }
 
@@ -3201,7 +3125,7 @@ span.skill {
 
 
 /*------------------------------------------------------------------
-	17. TESTMONIAL 
+	17. TESTMONIAL
 	-------------------------------------------------------------------*/
 
 .testmonial_section {
@@ -3211,7 +3135,7 @@ span.skill {
 }
 
 .cleaning .testmonial_section {
-	background-image: url('../images/cleaning_service/test_bg.png');
+	/*background-image: url('../images/cleaning_service/test_bg.png');*/
 	background-size: cover;
 	padding-bottom: 185px;
 }
@@ -3618,7 +3542,7 @@ footer ul.social_icons {
 }
 
 .cleaning .inner_banner_section {
-	background: url('../images/cleaning_service/inner_page_banner.jpg');
+	/*background: url('../images/cleaning_service/inner_page_banner.jpg');*/
 	min-height: 245px;
 	background-size: cover;
 	background-position: top center;
@@ -4800,3 +4724,25 @@ footer ul.social_icons {
 	margin-top: 35px;
 }
 
+/* Split the screen in half */
+.split {
+	height: 100%;
+	width: 50%;
+	position: fixed;
+	z-index: 1;
+	top: 0;
+	overflow-x: hidden;
+	padding-top: 20px;
+}
+
+/* Control the left side */
+.left {
+	left: 0;
+	/*background-color: #111;*/
+}
+
+/* Control the right side */
+.right {
+	right: 0;
+	/*background-color: red;*/
+}

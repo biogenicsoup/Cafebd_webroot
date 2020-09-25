@@ -7,7 +7,7 @@ $pagename = "Region Midt: TestCase";
 include 'defaults.php';
 include 'session.php';
 include 'header.php';
-include 'pagebanner.php';
+include 'banner.php';
 include 'connect.php';
 
 /**
@@ -67,23 +67,11 @@ if ($testCaseName != "") //hvis der er et navn skal testCasen oprettes/opdateres
         }
     }
     else {
-        $message = "navnet " . $testCaseName . " findes allerede i forvejen";
+        $message = "Navnet " . $testCaseName . " findes allerede i forvejen";
         echo "<script type='text/javascript'>
                 alert('" . $message . "');
                 document.getElementById('name').focus();
               </script>";
-    }
-}
-
-//update assigned suites to testcase
-if (isset($_POST['suite_checkbox'])) {
-    $suites = $_POST['suite_checkbox'];
-    $deletequery = "DELETE FROM TestCase_Suite WHERE TestCase_id=?";
-    $stmt = prepared_query($con, $deletequery, [(int)$testCaseId]);
-
-    for ($i = 0; $i < count($suites); $i++) {
-        $insertquery = "INSERT INTO TestCase_Suite (Suite_id, TestCase_id) VALUES (?,?)";
-        $stmt = prepared_query($con, $insertquery, [(int)$suites[$i], (int)$testCaseId] );
     }
 }
 
@@ -99,7 +87,6 @@ if($testCaseName == "")
     $testCaseTestType_id = $suitematrix[0]['TestType_id'];
 }
 // testtype option
-//<option value="volvo">Volvo</option>
 $sql = "SELECT id, name FROM testtype ORDER BY id";
 $typematrix = prepared_select($con, $sql, [])->fetch_all(MYSQLI_ASSOC);
 $optionsstr= "";
