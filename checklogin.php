@@ -39,6 +39,7 @@
 		// Register $myusername, $mypassword and redirect to file 'Page_suites.php'
 		$_SESSION['myusername'] = $myusername;
 		$_SESSION['mypassword'] = $mypassword;
+		$_SESSION['product'] = $result[0]['lastProduct'];
 
 		//if ($url)
 		//{

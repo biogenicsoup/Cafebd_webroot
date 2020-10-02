@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 if (isset($_SESSION['myusername']) and isset($_SESSION['mypassword']))
 {
     $loggedin = true;
@@ -15,11 +16,9 @@ if (isset($_GET['pagereload']))
     $pagereload = $_GET['pagereload'];
 }
 
-if (!$loggedin)
+if (!isset($_SESSION['product']))
 {
-    echo "<br>";
-    echo "<i> Du er ikke logget ind og kan ikke oprette/redigere autotest data! </i><br>";
-    echo "<a href='index.php'>Log ind</a>";
-    exit();
+    $_SESSION['product'] = 1;
 }
+
 ?>

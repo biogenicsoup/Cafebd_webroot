@@ -5,11 +5,9 @@ $hovertext = "'Suite'";
 $pagename = "Region Midt: Suite";
 
 include 'defaults.php';
-include 'session.php';
 include 'header.php';
 include 'banner.php';
-include 'connect.php';
-
+include 'mustbeloggedin.php';
 
 
 /**
@@ -39,12 +37,12 @@ if (isset($_POST['description']))
 if ($suitename != "") //hvis der er et navn skal suiten oprettes/opdateres
 {
     //findes navn i forvejen
-    $sql = "SELECT * FROM Suite s WHERE s.name=? AND s.id !=?";
-    $suite_list = prepared_select($con, $sql, [$suitename, $suiteId])->fetch_all(MYSQLI_ASSOC);
+    $sql = "SELECT * FROM Suite s WHERE s.name=? AND Product_id = ? AND s.id !=?";
+    $suite_list = prepared_select($con, $sql, [$suitename, $_SESSION['product'], $suiteId])->fetch_all(MYSQLI_ASSOC);
     if(count($suite_list) ==0) {
         if ($suiteId == 0) {
-            $sql = "INSERT INTO Suite (name, description) VALUES (?,?)";
-            $stmt = prepared_query($con, $sql, [$suitename, $suitedescription]);
+            $sql = "INSERT INTO Suite (name, description, Product_id) VALUES (?,?)";
+            $stmt = prepared_query($con, $sql, [$suitename, $suitedescription, $_SESSION['product']]);
             $suiteId = $con->insert_id;
         }
         else {

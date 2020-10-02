@@ -8,7 +8,6 @@ include 'defaults.php';
 include 'session.php';
 include 'header.php';
 include 'banner.php';
-include 'connect.php';
 
 echo "
 <div class='section padding_layout_1'>

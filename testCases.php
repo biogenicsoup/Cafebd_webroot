@@ -7,11 +7,15 @@ include 'defaults.php';
 include 'session.php';
 include 'header.php';
 include 'banner.php';
-include 'connect.php';
+include 'mustbeloggedin.php';
+
 
 /**
  * @var $con
  */
+
+
+
 
 $sql = "SELECT tc.id, tc.name name, tc.scriptVersion, tc.testRailId, tt.name testType FROM TestCase tc 
         JOIN TestType tt ON tt.id = tc.testType_id";

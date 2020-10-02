@@ -4,15 +4,24 @@ $hovertext = "'Suites'";
 $pagename = "Region Midt: Suites";
 
 include 'defaults.php';
-include 'session.php';
 include 'header.php';
 include 'banner.php';
-include 'connect.php';
 include 'components.php';
+include 'mustbeloggedin.php';
+
 
 /**
  * @var $con
+ * @var $loggedin
  */
+
+if (!$loggedin)
+{
+    echo "<br>";
+    echo "<i> Du er ikke logget ind og kan ikke oprette/redigere autotest data! </i><br>";
+    echo "<a href='index.php'>Home</a>";
+    exit();
+}
 
 $sql = "SELECT s.id, s.name, s.description FROM Suite s ORDER BY s.name";
 $suite_list = prepared_select($con, $sql, [])->fetch_all(MYSQLI_ASSOC);

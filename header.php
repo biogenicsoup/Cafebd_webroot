@@ -1,4 +1,20 @@
 <?php
+
+include 'connect.php';
+include 'session.php';
+/**
+ * @var $con
+ * @var $loggedin
+ */
+
+if (isset($_POST['productchange'])) // new product has been selected
+{
+    $productId = $_POST['productchange'];
+    $sql = "UPDATE login SET lastProduct=? WHERE name=? and password=?";
+    $affected_rows = prepared_query($con, $sql, [$productId, $_SESSION['myusername'], $_SESSION['mypassword']])->affected_rows;
+    $_SESSION['product'] = $productId;
+}
+
 echo "
 <!DOCTYPE html>
 <html lang='en'>
@@ -66,7 +82,31 @@ echo "
             </div>
           </div>
           <div class='float-right'>
-            <div class='make_appo'> <a class='btn white_btn' href='login.php'>login</a> </div>
+            <div class='make_appo'>";
+
+if($loggedin)
+{
+    echo "<form method='post'>
+            <select class='custom-select' style=height:50px; style=width:170px; name='productchange' id='productchange' onchange='this.form.submit()'>";
+
+
+    $sql = "SELECT * FROM product";
+    $result = prepared_select($con, $sql, [])->fetch_all(MYSQLI_ASSOC);
+    foreach ($result as $row) {
+        echo "<option value='" . $row['id'] . "'";
+        if ($row['id'] == $_SESSION['product']) {
+            echo " selected";
+        }
+        echo ">" . $row['name'] . "</option>";
+    }
+    echo"  </select>
+         </form>";
+}
+else {
+    echo "<a class='btn white_btn' href='login.php'>login</a>";
+}
+ echo"
+            </div>
           </div>
         </div>
       </div>
@@ -111,7 +151,13 @@ echo "
                     <li><a href='it_contact.html'>Contact Page 1</a></li>
                     <li><a href='it_contact_2.html'>Contact Page 2</a></li>
                   </ul>
-                </li>
+                </li>";
+if($loggedin) {
+    echo "      <li> <a href='logout.php'>Logout</a>
+                </li>";
+}
+
+echo"
               </ul>
             </div>
             <div class='search_icon'>
@@ -132,3 +178,6 @@ echo "
 </header>
 <!-- end header -->
 ";
+
+
+

@@ -5,12 +5,12 @@ $hovertext = "'TestCase'";
 $pagename = "Region Midt: TestCase";
 
 include 'defaults.php';
-include 'session.php';
 include 'header.php';
 include 'banner.php';
-include 'connect.php';
 include 'Step.php';
-include 'GenericData.php';
+include 'StepData.php';
+
+include 'mustbeloggedin.php';
 
 /**
  * @var $con
@@ -138,7 +138,7 @@ if($stepname != "" && $stepfunction != "")
 // create data if gdkey != ""
 if($gdkey != "")
 {
-    $newdata = new GenericData(0, $gdkey, $gdvalue, $stepid, $testCaseId, $con);
+    $newdata = new StepData(0, $gdkey, $gdvalue, $stepid, $testCaseId, $con);
 }
 
 
@@ -216,7 +216,7 @@ $steplist = prepared_select($con, $sql, [$testCaseId])->fetch_all(MYSQLI_ASSOC);
                         <p>" . $row['function'] . "</p>
                         <ul>";
 
-       $sql = "SELECT gd.key, gd.value FROM genericdata gd JOIN testcase_step ts on gd.TestCase_Step_TestCase_id = ts.TestCase_id and gd.TestCase_Step_Step_id = ts.Step_id WHERE ts.TestCase_id = ? AND ts.Step_id =?";
+       $sql = "SELECT gd.name, gd.value FROM genericdata gd JOIN testcase_step ts on gd.TestCase_Step_TestCase_id = ts.TestCase_id and gd.TestCase_Step_Step_id = ts.Step_id WHERE ts.TestCase_id = ? AND ts.Step_id =?";
        $datalist = prepared_select($con, $sql, [$testCaseId, $row['id']])->fetch_all(MYSQLI_ASSOC);
        foreach ($datalist as $datarow)
        {

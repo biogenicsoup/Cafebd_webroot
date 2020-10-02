@@ -11,7 +11,7 @@ if (isset($_GET['url']))
     $url = $_GET['url'];
 }
 
-echo "<strong> For at oprette/redigere data i CafeBD skal du være logget ind.</strong> <br> <br>
+echo "<strong> For at oprette/redigere data i Autotest skal du være logget ind.</strong> <br> <br>
 	<table width='300' border='0' cellpadding='0' cellspacing='1' bgcolor='#CCCCCC'>
 		<tr>
 			<form name='form1' method='post' action='checklogin.php'>

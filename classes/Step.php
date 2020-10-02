@@ -1,0 +1,268 @@
+<?php
+
+class Step
+{
+    public int $id;
+    public string $name;
+    public string $function;
+    public mysqli $con;
+
+    function __construct($id, $con) {
+        $this->id = $id;
+        $this->con = $con;
+
+        if($this->id > 0) //get step
+        {
+            $sql="SELECT s.name, s.function FROM Step s WHERE id = ?";
+            $data_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+            $this->name = $data_list[0]['name'];
+            $this->function = $data_list[0]['function'];
+        }
+    }
+
+    function create($name, $function) {
+        if($this->id == 0) //this is a new step
+        {
+            //persist this step
+            $this->name = $name;
+            $this->function = $function;
+
+            $sql = "INSERT INTO Step (`name`, `function`) VALUES (?,?)";
+
+            $stmt = prepared_query($this->con, $sql, [$name, $function]);
+            if($stmt->affected_rows < 1)
+            {
+                die("Could not persist Step with name = " . $this->name . PHP_EOL .
+                    "Error message = " . $this->con->error);
+            }
+            $this->id = $this->con->insert_id;
+        }
+        else
+        {
+            die("This ID = " . $this->id . " already exist. Please use the constructor instead of calling create on an existing element");
+        }
+    }
+    function bindToTestcase($testcaseId) {
+        if ($this->id > 0){
+            //Is it bound already?
+            $sql="SELECT * FROM module_step ms
+                  JOIN module m on ms.Module_id = m.id
+                  JOIN testcase_module tcm on m.id = tcm.Module_id 
+                  WHERE ms.Step_id = ? AND tcm.TestCase_id = ?";
+            $data_list = prepared_select($this->con, $sql, [$this->id, $testcaseId])->fetch_all(MYSQLI_ASSOC);
+            if(count($data_list)==0)
+            {  // create hidden module and bind it to testcase then bind step to module
+                //module
+                $modulename = "testcase-".$testcaseId . " to step-" . $this->id;
+                $sql = "INSERT INTO module(name) VALUE (?)";
+                $stmt = prepared_query($this->con, $sql, [$modulename]);
+                $moduleid = $this->con->insert_id;
+                if($stmt->affected_rows < 1)
+                {
+                    die("Could not create module with name = ". $modulename . PHP_EOL .
+                        "Error message = " . $this->con->error);
+                }
+                // bind to testcase
+                $sql = "INSERT INTO testcase_module (TestCase_id, Module_id) VALUES (?,?)";
+                $stmt = prepared_query($this->con, $sql, [$testcaseId, $moduleid]);
+                if($stmt->affected_rows < 1)
+                {
+                    die("Could not bind module with id = " . $moduleid . "to testcase with id = " . $testcaseId . PHP_EOL .
+                        "Error message = " . $this->con->error);
+                }
+                // bind to step
+                $sql = "INSERT INTO module_step (Module_id, Step_id) VALUES (?,?)";
+                $stmt = prepared_query($this->con, $sql, [$moduleid, $this->id]);
+                if($stmt->affected_rows < 1)
+                {
+                    die("Could not bind Step with id = " . $this->id . "to module with id = " . $moduleid . PHP_EOL .
+                        "Error message = " . $this->con->error);
+                }
+            }
+        }
+    }
+    function unBindFromTestcase($testcaseId) {
+        $sql="SELECT ms.Module_id FROM module_step ms
+                  JOIN module m on ms.Module_id = m.id
+                  JOIN testcase_module tcm on m.id = tcm.Module_id 
+                  WHERE ms.Step_id = ? AND tcm.TestCase_id = ? AND m.hidden = ?";
+        $data_list = prepared_select($this->con, $sql, [$this->id, $testcaseId, 1])->fetch_all(MYSQLI_ASSOC);
+        if(count($data_list)>0)
+        {
+            $moduleid = $data_list[0]['Module_id'];
+            //delete bindings
+            $sql = "DELETE FROM testcase_module WHERE TestCase_id=? AND Module_id=?";
+            prepared_query($this->con, $sql, [$testcaseId, $moduleid]);
+            $sql = "DELETE FROM module_step WHERE Step_id=? AND Module_id=?";
+            prepared_query($this->con, $sql, [$this->id, $moduleid]);
+            $sql = "DELETE FROM module WHERE id=?";
+            prepared_query($this->con, $sql, [$moduleid]);
+        }
+    }
+
+    function bindToModel($moduleid)
+    {
+        if ($this->id > 0){
+            //Is it bound already?
+            $sql="SELECT * FROM module_step ms WHERE Module_id =? AND Step_id =? ";
+            $data_list = prepared_select($this->con, $sql, [$moduleid, $this->id])->fetch_all(MYSQLI_ASSOC);
+            if(count($data_list)==0)
+            {   // bind module to step
+                $sql = "INSERT INTO module_step (Module_id, Step_id) VALUES (?,?)";
+                $stmt = prepared_query($this->con, $sql, [$moduleid, $this->id]);
+                if($stmt->affected_rows < 1)
+                {
+                    die("Could not bind Step with id = " . $this->id . "to module with id = " . $moduleid . PHP_EOL .
+                        "Error message = " . $this->con->error);
+                }
+            }
+        }
+    }
+    function unBindFromModel($moduleid)
+    {
+        $sql = "DELETE FROM module_step WHERE Step_id=? AND Module_id=?";
+        prepared_query($this->con, $sql, [$this->id, $moduleid]);
+    }
+    function get_id() {
+        return $this->id;
+    }
+    function get_name() {
+        return $this->name;
+    }
+    function get_function() {
+        return $this->function;
+    }
+    function set_name($name) {
+        $this->name = $name;
+        $this->save();
+    }
+    function set_function($function) {
+        $this->function = $function;
+        $this->save();
+    }
+    function set_nameAndFunction($name, $function) {
+        $this->name = $name;
+        $this->function = $function;
+        $this->save();
+    }
+
+    function get_data() {
+            $sql = "SELECT * FROM stepdata WHERE Step_id = ?";
+            return prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+    }
+    function get_value($key) {
+        if($this->id > 0) {
+            $sql="SELECT value FROM stepdata WHERE Step_id = ? AND name = ?";
+            $data_list = prepared_select($this->con, $sql, [$this->id, $key])->fetch_all(MYSQLI_ASSOC);
+
+            if(count($data_list) == 1)
+            {
+                return $data_list[0]["value"];
+            }
+            else if(count($data_list) > 1)
+            {
+                $message = "More than one value found for key " . $key . ". Please sanitize your data (a random value is returned)";
+                echo "<script type='text/javascript'>alert('$message');</script>";
+                return $data_list[0]["value"];
+            }
+        }
+        return "";
+    }
+    function get_stepdata_names()
+    {
+        $sql = "SELECT name FROM stepdata WHERE Step_id = ?";
+        return prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+    }
+    function get_stepnumber($testcaseId)
+    {
+        if($this->id > 0) {
+            $sql="SELECT ms.stepNumber, tcm.moduleNumber FROM module_step ms
+                  JOIN module m on ms.Module_id = m.id
+                  JOIN testcase_module tcm on m.id = tcm.Module_id 
+                  WHERE ms.Step_id = ? AND tcm.TestCase_id = ?";
+            $data_list = prepared_select($this->con, $sql, [$this->id, $testcaseId])->fetch_all(MYSQLI_ASSOC);
+            if(count($data_list)>0) {
+                $stepNumber = (int)$data_list [0]['stepNumber'];
+                $moduleNumber = (int)$data_list [0]['moduleNumber'];
+                return ($stepNumber + $moduleNumber);
+                /* modulenumber for hidden module is always zero,
+                 * modelnumber for visible modules is the stepnumber for the first step,
+                 * stepnumber is the offset of this step from the first step in the module */
+            }
+        }
+        return -1;
+    }
+    function set_stepnumber($stepnumber, $testcaseId)
+    {
+        if($this->id > 0) {
+            $sql="SELECT ms.stepNumber, m.id, m.hidden FROM module_step ms
+                  JOIN module m on ms.Module_id = m.id
+                  JOIN testcase_module tcm on m.id = tcm.Module_id 
+                  WHERE ms.Step_id = ? AND tcm.TestCase_id = ?";
+            $data_list = prepared_select($this->con, $sql, [$this->id, $testcaseId])->fetch_all(MYSQLI_ASSOC);
+            if(count($data_list)>0) {
+                $stepStepNumber = (int)$data_list [0]['stepNumber'];
+                $moduleid = (int)$data_list [0]['id'];
+                $modulehidden = (int)$data_list [0]['hidden'];
+
+                if($modulehidden == 1) //it is hidden
+                {
+                    $sql = "UPDATE module_step SET stepNumber = ? WHERE Module_id =? AND Step_id = ?";
+                    $affected_rows = prepared_query($this->con, $sql, [$stepnumber, $moduleid, $this->id])->affected_rows;
+                    if (count($affected_rows) < 1) {
+                        die("Could not update stepnumber for step = " . $this->name . PHP_EOL .
+                            "Error message = " . $this->con->error);
+                    }
+                }
+                else {
+                    $newmodulenumber = $stepnumber - $stepStepNumber;
+                    $sql = "UPDATE testcase_module SET moduleNumber = ? WHERE Module_id =? AND TestCase_id = ?";
+                    $affected_rows = prepared_query($this->con, $sql, [$newmodulenumber, $moduleid, $testcaseId])->affected_rows;
+                    if (count($affected_rows) < 1) {
+                        die("Could not update stepnumber for step = " . $this->name . PHP_EOL .
+                            "Error message = " . $this->con->error);
+                    }
+                }
+            }
+        }
+    }
+    function save() {
+        if($this->id > 0) {
+            $sql = "UPDATE step SET name=?, function=? WHERE id=?";
+            $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->function, $this->id])->affected_rows;
+            if (count($affected_rows) < 1) {
+                die("Could not persist step with name = " . $this->name . PHP_EOL .
+                    "Error message = " . $this->con->error);
+            }
+        }
+        else
+        {
+            die("Please create object before saving");
+        }
+    }
+    function delete() {
+        //delete data -> binding -> step
+        $sql = "DELETE FROM stepdata sd WHERE sd.Step_id = ?";
+        prepared_query($this->con, $sql, [$this->id]);
+        $sql="SELECT m.id, m.hidden FROM module_step ms
+                  JOIN module m on ms.Module_id = m.id
+                  JOIN testcase_module tcm on m.id = tcm.Module_id 
+                  WHERE ms.Step_id = ?";
+        $data_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+        foreach ($data_list as $row) {
+            $moduleid = (int)$row['id'];
+            $hiddenmodule = (int)$row['hidden'];
+            if ($hiddenmodule == 1) // it IS hidden -> delete dummy module
+            {
+                $sql = "DELETE FROM testcase_module tm WHERE tm.Module_id = ?";
+                prepared_query($this->con, $sql, [$moduleid]);
+                $sql = "DELETE FROM module m WHERE m.id = ?";
+                prepared_query($this->con, $sql, [$moduleid]);
+            }
+        }
+        $sql = "DELETE FROM module_step ms WHERE ms.Step_id = ?";
+        prepared_query($this->con, $sql, [$this->id]);
+        $sql = "DELETE FROM step s WHERE s.id = ?";
+        prepared_query($this->con, $sql, [$this->id]);
+    }
+}

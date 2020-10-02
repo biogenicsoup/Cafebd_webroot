@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @var $overskrift
+ */
 
 echo"
 <!-- inner page banner -->
