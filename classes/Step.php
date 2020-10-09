@@ -2,10 +2,11 @@
 
 class Step
 {
-    public int $id;
-    public string $name;
-    public string $function;
-    public mysqli $con;
+    private int $id;
+    private string $name;
+    private string $function;
+    private mysqli $con;
+    private int $productid;
 
     function __construct($id, $con) {
         $this->id = $id;
@@ -13,33 +14,33 @@ class Step
 
         if($this->id > 0) //get step
         {
-            $sql="SELECT s.name, s.function FROM Step s WHERE id = ?";
+            $sql="SELECT s.name, s.function, Product_id FROM Step s WHERE id = ?";
             $data_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
             $this->name = $data_list[0]['name'];
             $this->function = $data_list[0]['function'];
+            $this->productid = $data_list[0]['Product_id'];
         }
     }
 
-    function create($name, $function) {
+    function update($name, $function, $productid) {
+        $this->name = $name;
+        $this->function = $function;
+        $this->productid = $productid;
+
         if($this->id == 0) //this is a new step
         {
-            //persist this step
-            $this->name = $name;
-            $this->function = $function;
+            $sql = "INSERT INTO Step (`name`, `function`, Product_id) VALUES (?,?,?)";
 
-            $sql = "INSERT INTO Step (`name`, `function`) VALUES (?,?)";
-
-            $stmt = prepared_query($this->con, $sql, [$name, $function]);
-            if($stmt->affected_rows < 1)
-            {
-                die("Could not persist Step with name = " . $this->name . PHP_EOL .
-                    "Error message = " . $this->con->error);
-            }
+            $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->function, $this->productid])->affected_rows;
             $this->id = $this->con->insert_id;
         }
-        else
-        {
-            die("This ID = " . $this->id . " already exist. Please use the constructor instead of calling create on an existing element");
+        else { //this is an existing module -> update
+            $sql = "UPDATE step SET name=?, function=?, Product_id=? WHERE id=?";
+            $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->function, $this->productid, $this->id])->affected_rows;
+        }
+        if ($affected_rows < 1) {
+            die("Could not update Step with name = " . $this->name . PHP_EOL .
+                "Error message = " . $this->con->error);
         }
     }
     function bindToTestcase($testcaseId) {
@@ -126,6 +127,9 @@ class Step
     function get_id() {
         return $this->id;
     }
+    function get_connection() {
+        return $this->con;
+    }
     function get_name() {
         return $this->name;
     }
@@ -146,9 +150,19 @@ class Step
         $this->save();
     }
 
-    function get_data() {
-            $sql = "SELECT * FROM stepdata WHERE Step_id = ?";
-            return prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+    /**
+     * Returns a list of StepData objects
+     * @return StepData[]
+     */
+    function get_stepData() {
+        $sql = "SELECT * FROM stepdata WHERE Step_id = ?";
+        $stepData_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+        $stepData = array();
+        foreach ($stepData_list as $row)
+        {
+            $stepData[] = new StepData($row['id'],$this->con);
+        }
+        return $stepData;
     }
     function get_value($key) {
         if($this->id > 0) {

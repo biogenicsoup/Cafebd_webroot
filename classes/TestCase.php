@@ -12,46 +12,54 @@ class TestCase
     public int $scriptversion;
     public int $testtypeid;
     public mysqli $con;
-
+    private int $productid;
 
     function __construct($id, $con)
     {
         $this->id = $id;
         $this->con = $con;
+        $this->name = "";
+        $this->description = "";
+        $this->testrailid = 0;
+        $this->scriptversion = 1;
+        $this->testtypeid = 1;
 
-        if ($this->id > 0) //get step
+        if ($this->id > 0) //get TestCase
         {
-            $sql = "SELECT tc.name, tc.description, tc.testRailId, tc.scriptVersion, tc.TestType_id FROM testcase tc WHERE id = ?";
+            $sql = "SELECT tc.name, tc.description, tc.testRailId, tc.scriptVersion, tc.TestType_id, tc.Product_id FROM testcase tc WHERE id = ?";
             $data_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
             $this->name = $data_list[0]['name'];
             $this->description = $data_list[0]['description'];
             $this->testrailid = $data_list[0]['$testrailid'];
             $this->scriptversion = $data_list[0]['scriptVersion'];
             $this->testtypeid = $data_list[0]['TestType_id'];
+            $this->productid = $data_list[0]['Product_id'];
         }
     }
 
-    function create($name, $description, $testrailid, $testtypeid)
+    function update($name, $description, $testrailid, $testtypeid, $productid)
     {
+        $this->name = $name;
+        $this->description = $description;
+        $this->testrailid = $testrailid;
+        $this->scriptversion = 1;
+        $this->testtypeid = $testtypeid;
+        $this->productid = $productid;
+
         if ($this->id == 0) //this is a new TestCase
         {
             //persist this step
-            $this->name = $name;
-            $this->description = $description;
-            $this->testrailid = $testrailid;
-            $this->scriptversion = 1;
-            $this->testtypeid = $testtypeid;
 
-            $sql = "INSERT INTO testcase (`name`, description, testRailId, scriptVersion, TestType_id) VALUES (?,?,?,?,?)";
-            $stmt = prepared_query($this->con, $sql, [$this->name, $this->description, $this->testrailid, $this->scriptversion, $this->testtypeid]);
+
+            $sql = "INSERT INTO testcase (`name`, description, testRailId, scriptVersion, TestType_id, Product_id) VALUES (?,?,?,?,?,?)";
+            $stmt = prepared_query($this->con, $sql, [$this->name, $this->description, $this->testrailid, $this->scriptversion, $this->testtypeid, $this->productid]);
             if ($stmt->affected_rows < 1) {
                 die("Could not persist TestCase with name = " . $this->name . PHP_EOL .
                     "Error message = " . $this->con->error);
             }
             $this->id = $this->con->insert_id;
-        } else {
-            die("This ID = " . $this->id . " already exist. Please use the constructor instead of calling create on an existing element");
         }
+        else $this->save();
     }
 
     function bindToSuite($suiteid)
@@ -184,7 +192,10 @@ class TestCase
 
     function get_testType()
     {
-        return $this->testtypeid;
+        $sql="SELECT tt.name FROM testtype tt
+                  JOIN testcase tc on tc.TestType_id = tt.id WHERE tc.id =?";
+        $data_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+        return $data_list[0]['name'];
     }
 
     function set_name($name)
@@ -276,8 +287,8 @@ class TestCase
     function save()
     {
         if ($this->id > 0) {
-            $sql = "UPDATE testcase SET name=?, description=?, testRailId=?, scriptVersion=?, TestType_id=? WHERE id=?";
-            $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->description, $this->testrailid, $this->scriptversion + 1, $this->testtypeid, $this->id])->affected_rows;
+            $sql = "UPDATE testcase SET name=?, description=?, testRailId=?, scriptVersion=?, TestType_id=?, Product_id =? WHERE id=?";
+            $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->description, $this->testrailid, $this->scriptversion + 1, $this->testtypeid, $this->productid, $this->id])->affected_rows;
             if (count($affected_rows) < 1) {
                 die("Could not persist testcase with name = " . $this->name . PHP_EOL .
                     "Error message = " . $this->con->error);

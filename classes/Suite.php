@@ -31,16 +31,21 @@ class Suite
         }
     }
 
-    function create() {
+    function update($name, $description, $productid) {
+        $this->name = $name;
+        $this->description = $description;
+        $this->productid = $productid;
+
         if($this->id <= 0) //this is a new suite, create it
         {
             $sql = "INSERT INTO suite (name, description, Product_id) VALUES (?,?,?)";
-            $stmt = prepared_query($this->con, $sql, [$this->name, $this->function, $this->productid]);
+            $stmt = prepared_query($this->con, $sql, [$this->name, $this->description, $this->productid]);
             if ($stmt->affected_rows < 1) {
                 die("Could not persist suite with name = " . $this->name);
             }
-            $this->id = $con->insert_id;
+            $this->id = $this->con->insert_id;
         }
+        else $this->save();
     }
     function get_id() {
         return $this->id;
@@ -54,13 +59,24 @@ class Suite
     function get_productid() {
         return $this->productid;
     }
+
+    /**
+     * Returns a list of TestCase objects
+     * @return TestCase[]
+     */
     function get_testcases() {
-        $sql = "SELECT tc.id, tc.name name, tc.scriptVersion, tc.testRailId, tt.name testType FROM TestCase tc 
-        JOIN TestType tt ON tt.id = tc.testType_id
-        JOIN testcase_suite tcs ON tcs.TestCase_id = tc.id WHERE tcs.Suite_id=?";
-        $testCase_list = prepared_select($con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
-        return $testCase_list;
+        $sql = "SELECT tc.id FROM TestCase tc 
+                JOIN testcase_suite tcs ON tcs.TestCase_id = tc.id WHERE tcs.Suite_id=?";
+        $testCase_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+
+        $testcases = array();
+        foreach ($testCase_list as $row)
+        {
+            $testcases[] = new Step($row['id'],$this->con);
+        }
+        return $testcases;
     }
+
     function save(){
         $sql = "UPDATE suite SET name=?, description=?, Product_id=? WHERE id=?";
         $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->description, $this->productid, $this->id])->affected_rows;
@@ -72,9 +88,9 @@ class Suite
     function delete(){
         //delete binding -> suite
         $sql = "DELETE FROM testcase_suite ts WHERE ts.Suite_id = ?";
-        $stmt = prepared_query($this->con, $sql, [$this->id]);
+        prepared_query($this->con, $sql, [$this->id]);
         $sql = "DELETE FROM suite s WHERE s.id = ?";
-        $stmt = prepared_query($this->con, $sql, [$this->id]);
+        prepared_query($this->con, $sql, [$this->id]);
     }
 
 }

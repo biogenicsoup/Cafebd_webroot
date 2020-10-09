@@ -1,13 +1,13 @@
 <?php
 
-
 class Module
 {
-    public int $id;
-    public string $name;
-    public string $description;
-    public int $hidden;
-    public mysqli $con;
+    private int $id;
+    private string $name;
+    private string $description;
+    private int $hidden;
+    private mysqli $con;
+    private int $productid;
 
     function __construct($id, $con)
     {
@@ -16,34 +16,39 @@ class Module
 
         if ($this->id > 0) //get step
         {
-            $sql = "SELECT m.name, m.description, m.hidden FROM module m WHERE id = ?";
+            $sql = "SELECT m.name, m.description, m.hidden, m.Product_id  FROM module m WHERE id = ?";
             $data_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
             $this->name = $data_list[0]['name'];
             $this->description = $data_list[0]['description'];
             $this->hidden = $data_list[0]['hidden'];
+            $this->productid = $data_list[0]['Product_id'];
         }
     }
 
-    function create($name, $description, $hidden)
+    function update($name, $description, $hidden, $productid)
     {
-        if ($this->id == 0) //this is a new module
-        {
-            //persist this step
-            $this->name = $name;
-            $this->description = $description;
-            $this->hidden = $hidden;
+        $this->name = $name;
+        $this->description = $description;
+        $this->hidden = $hidden;
+        $this->productid = $productid;
 
-            $sql = "INSERT INTO module (`name`, description, hidden) VALUES (?,?,?)";
-            $stmt = prepared_query($this->con, $sql, [$name, $description, $hidden]);
-            if ($stmt->affected_rows < 1) {
-                die("Could not persist module with name = " . $this->name . PHP_EOL .
-                    "Error message = " . $this->con->error);
-            }
+        if ($this->id == 0) //this is a new module ->insert
+        {
+            $sql = "INSERT INTO module (`name`, description, hidden, Product_id) VALUES (?,?,?,?)";
+            $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->description , $this->hidden, $this->productid])->affected_rows;
             $this->id = $this->con->insert_id;
-        } else {
-            die("This ID = " . $this->id . " already exist. Please use the constructor instead of calling create on an existing element");
+        }
+        else { //this is an existing module -> update
+            $sql = "UPDATE module SET name=?, description=? ,hidden=? , Product_id =? WHERE id=?";
+            $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->description, $this->hidden, $this->productid, $this->id])->affected_rows;
+        }
+        if ($affected_rows < 1) {
+            die("Could not update module with name = " . $this->name . PHP_EOL .
+                "Error message = " . $this->con->error);
         }
     }
+
+
 
     function bindToTestcase($testcaseId)
     {
@@ -51,8 +56,7 @@ class Module
             //Is it bound already?
             $sql = "SELECT * FROM testcase_module tm WHERE tm.TestCase_id =? AND tm.module_id =?";
             $data_list = prepared_select($this->con, $sql, [$testcaseId, $this->id])->fetch_all(MYSQLI_ASSOC);
-            if (count($data_list) == 0) {  // create hidden module and bind it to testcase then bind step to module
-                //get module number (this will be placed last)
+            if (count($data_list) == 0) {  //get module number (this will be placed last)
                 $sql = "SELECT * FROM testcase_module tm WHERE tm.TestCase_id =?";
                 $numelemets_list = prepared_select($this->con, $sql, [$testcaseId])->fetch_all(MYSQLI_ASSOC);
 
@@ -111,7 +115,7 @@ class Module
                 $sql = "DELETE FROM module WHERE id=?";
                 prepared_query($this->con, $sql, [$this->id]);
                 //remove this reference (not sure this works, but the destructor class definitely does not work)
-                //$this = null;
+                //$this = null; This does not work as well ?!?!?! todo: how to destruct?
             }
         }
     }
@@ -119,6 +123,11 @@ class Module
     function get_id()
     {
         return $this->id;
+    }
+
+    function get_hidden()
+    {
+        return $this->hidden;
     }
 
     function get_name()
@@ -129,6 +138,11 @@ class Module
     function get_description()
     {
         return $this->description;
+    }
+
+    function get_productid()
+    {
+        return $this->productid;
     }
 
     function set_name($name)

@@ -2,12 +2,11 @@
 
 class StepData
 {
-    public int $id;
-    public string $name;
-    public string $value;
-    public int $stepid;
-    public int $testcaseid;
-    public mysqli $con;
+    private int $id;
+    private string $name;
+    private string $value;
+    private int $stepid;
+    private mysqli $con;
 
     function __construct($id, $con) {
         $this->id = $id;
@@ -19,7 +18,7 @@ class StepData
         if ($this->id > 0) //data is persisted, get it
         {
             $sql = "SELECT sd.name, sd.value, sd.Step_id FROM stepdata sd WHERE id = ?";
-            $sd_list = prepared_select($con, $sql, [(int) $suiteId])->fetch_all(MYSQLI_ASSOC);
+            $sd_list = prepared_select($con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
             $this->name=$sd_list[0]['name'];
             $this->value=$sd_list[0]['value'];
             $this->stepid=$sd_list[0]['Step_id'];

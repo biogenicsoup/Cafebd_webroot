@@ -3,45 +3,35 @@ $overskrift = "Suites";
 $hovertext = "'Suites'";
 $pagename = "Region Midt: Suites";
 
-include 'defaults.php';
-include 'header.php';
-include 'banner.php';
-include 'components.php';
-include 'mustbeloggedin.php';
+include_once 'defaults.php';
+include_once 'header.php';
+include_once 'banner.php';
+//include 'components.php';
+include_once 'mustbeloggedin.php';
+include_once 'Views/viewSuite.php';
+include_once 'classes/Product.php';
 
+$productid = 0;
+if (isset($_POST['id']))
+{
+    $productid = $_POST['id'];
+} else if (isset($_GET['id']))
+{
+    $productid = $_GET['id'];
+}
 
 /**
  * @var $con
- * @var $loggedin
  */
 
-if (!$loggedin)
-{
-    echo "<br>";
-    echo "<i> Du er ikke logget ind og kan ikke oprette/redigere autotest data! </i><br>";
-    echo "<a href='index.php'>Home</a>";
-    exit();
-}
+$product = new Product($productid, $con);
+var_dump($product);
+echo "<div class='displaycontent'><div class='column50' id='suitelist' style='background-color: #00bf00'>";
+echo draw_suite_accordion($product->get_suites());
+echo "</div></div>
+<div class='column50' style='background-color: #0f3e68'></div>";
 
-$sql = "SELECT s.id, s.name, s.description FROM Suite s ORDER BY s.name";
-$suite_list = prepared_select($con, $sql, [])->fetch_all(MYSQLI_ASSOC);
-
-echo "<div class='row' style='margin-bottom: 30px;'>
-          <div class='col-md-12'>
-            <div class='full margin_bottom_30'>
-              <div class='accordion border_circle'>
-                <div class='bs-example'> ";
-accordion($suite_list, "Page_suite.php");
-echo "          </div>
-              </div>
-            </div>
-          </div>
-       </div>";
-
-
-
-echo "<a class='btn sqaure_bt' href='Page_suite.php'>Opret suite</a>";
-echo "<a class='btn sqaure_bt' href='Page_testCase.php'>Opret testcase</a>";
+echo draw_add_suite('suitelist','addEditSuite.php', $productid, $con);
 
 include 'footer.php';
 ?>

@@ -8,8 +8,8 @@ echo"
 <script>
   $(function() {
       var icons = {
-         header: 'iconClosed',
-         headerSelected: 'iconOpen'
+         header: 'iconClosed', //virker ikke
+         headerSelected: 'iconOpen' //virker ikke
       };
       $( '#jQuery_accordion' )
       //$( '#accordion > div' )
