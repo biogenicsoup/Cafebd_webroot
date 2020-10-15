@@ -1,5 +1,6 @@
 <?php
-include 'Suite.php';
+include_once 'Suite.php';
+include_once 'TestCase.php';
 
 class Product
 {
@@ -68,6 +69,21 @@ class Product
             $suites[] = new Suite($row['id'], $this->con);
         }
         return $suites;
+    }
+    
+    /**
+     * Returns a list of Suite objects
+     * @return Suite[]
+     */
+    function get_testcases()
+    {
+        $sql = "SELECT tc.id FROM testcase tc WHERE tc.Product_id = ? ORDER BY tc.name";
+        $testcase_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+        $testcases = array();
+        foreach ($testcase_list as $row) {
+            $testcases[] = new TestCase($row['id'], $this->con);
+        }
+        return $testcases;
     }
 
     function save()

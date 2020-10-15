@@ -201,9 +201,9 @@ $( function addSuiteDialog() {
     } else {
         foreach ($productlist as $row) {
             if ($row['id'] == $productid) {
-                $returnstr .= "<option value='" . $row['id'] . "' selected>" . $row['$name'] . "</option>";
+                $returnstr .= "<option value='" . $row['id'] . "' selected>" . $row['name'] . "</option>";
             } else {
-                $returnstr .= "<option value='" . $row['id'] . "'>" . $row['$name'] . "</option>";
+                $returnstr .= "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
             }
         }
     }

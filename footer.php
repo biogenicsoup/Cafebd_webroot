@@ -1,7 +1,7 @@
 <?php
 echo"
     <footer class='footer_style'>
-      <div class='container-fuild'>
+      <div class='container-fluid'>
         <div class='row'>
           <div class='map_section'>
             <div id='map'></div>
@@ -70,9 +70,7 @@ echo"
     <!-- end footer -->
     <!-- js section -->
     <!--<script src='js/jquery.min.js'></script>-->
-    <script src='https://code.jquery.com/jquery-1.12.4.js'></script>
-    <script src='https://code.jquery.com/ui/1.12.1/jquery-ui.js'></script> 
-    <script src='js/bootstrap.min.js'></script>
+    <script src='js/bootstrap.min.js'></script>   
     <!-- menu js -->
     <script src='js/menumaker.js'></script>
     <!-- wow animation -->

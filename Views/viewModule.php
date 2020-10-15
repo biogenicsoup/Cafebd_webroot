@@ -1,5 +1,5 @@
 <?php
-include 'viewStep.php';
+include_once 'viewStep.php';
 
 include_once __DIR__ .'/../classes/Products.php';
 

@@ -32,4 +32,10 @@ class Products
         $sql = "SELECT id, name FROM product ORDER BY name";
         return prepared_select($this->con, $sql, [])->fetch_all(MYSQLI_ASSOC);
     }
+    
+    function get_testtype_list()
+    {
+        $sql = "SELECT id, name FROM testtype ORDER BY id";
+        return prepared_select($this->con, $sql, [])->fetch_all(MYSQLI_ASSOC);
+    }
 }

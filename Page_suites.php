@@ -10,6 +10,7 @@ include_once 'banner.php';
 include_once 'mustbeloggedin.php';
 include_once 'Views/viewSuite.php';
 include_once 'classes/Product.php';
+include_once 'Views/viewTestCase.php';
 
 $productid = 0;
 if (isset($_POST['id']))
@@ -25,13 +26,27 @@ if (isset($_POST['id']))
  */
 
 $product = new Product($productid, $con);
-var_dump($product);
-echo "<div class='displaycontent'><div class='column50' id='suitelist' style='background-color: #00bf00'>";
+echo "<div class='container'>
+        <div class='row'>
+            <div class='col-7'>
+                <div id='suitelist' >";
 echo draw_suite_accordion($product->get_suites());
-echo "</div></div>
-<div class='column50' style='background-color: #0f3e68'></div>";
+echo "          </div>
+                <div>";
+                    echo draw_add_suite('suitelist','addEditSuite.php', $productid, $con);
+echo "          </div>
+            </div>
+            <div class='col-5'>
+                <div id='testcaselist'>";
+echo draw_testcase_accordion($product->get_testcases());
+echo "          </div>
+                <div>";
+                    echo draw_add_testcase('testcaselist','addEditTestCase.php', $productid, $con);
+echo "          </div>
+            </div>
+        </div>
+      </div>";
 
-echo draw_add_suite('suitelist','addEditSuite.php', $productid, $con);
 
 include 'footer.php';
 ?>

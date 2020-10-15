@@ -30,7 +30,7 @@ class TestCase
             $data_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
             $this->name = $data_list[0]['name'];
             $this->description = $data_list[0]['description'];
-            $this->testrailid = $data_list[0]['$testrailid'];
+            $this->testrailid = (int) $data_list[0]['$testrailid'];
             $this->scriptversion = $data_list[0]['scriptVersion'];
             $this->testtypeid = $data_list[0]['TestType_id'];
             $this->productid = $data_list[0]['Product_id'];
@@ -43,7 +43,7 @@ class TestCase
         $this->description = $description;
         $this->testrailid = $testrailid;
         $this->scriptversion = 1;
-        $this->testtypeid = $testtypeid;
+        $this->testtypeid = (int) $testtypeid;
         $this->productid = $productid;
 
         if ($this->id == 0) //this is a new TestCase
@@ -51,8 +51,8 @@ class TestCase
             //persist this step
 
 
-            $sql = "INSERT INTO testcase (`name`, description, testRailId, scriptVersion, TestType_id, Product_id) VALUES (?,?,?,?,?,?)";
-            $stmt = prepared_query($this->con, $sql, [$this->name, $this->description, $this->testrailid, $this->scriptversion, $this->testtypeid, $this->productid]);
+            $sql = "INSERT INTO testcase (`name`, `description`, `scriptVersion`, `testRailId`, `TestType_id`, `Product_id`) VALUES (?,?,?,?,?,?)";
+            $stmt = prepared_query($this->con, $sql, [$this->name, $this->description, $this->scriptversion, $this->testrailid, $this->testtypeid, $this->productid]);
             if ($stmt->affected_rows < 1) {
                 die("Could not persist TestCase with name = " . $this->name . PHP_EOL .
                     "Error message = " . $this->con->error);
