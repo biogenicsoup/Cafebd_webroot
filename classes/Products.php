@@ -1,5 +1,5 @@
 <?php
-include 'Product.php';
+include_once 'includeclasses.php';
 
 class Products
 {

@@ -44,5 +44,5 @@ echo "          </div>
             </div>
         </div>
       </div>";
-echo draw_add_product('productlist', 'addEditProduct.php');
+echo draw_add_product('addEditProduct.php');
 include 'footer.php';

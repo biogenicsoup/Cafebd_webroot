@@ -24,10 +24,3 @@ if ($name != "") {  //hvis der er et navn skal modulet opdateres
     $product = new Product($id, $con);
     $product->Update($name);
 }
-
-$products = new Products($con);
-foreach ($products->get_products() as $product)
-{
-    echo draw_product_div_as_link($product, "page_product.php?id=" . $product->get_id());
-}
-

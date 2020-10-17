@@ -1,5 +1,5 @@
 <?php
-
+include_once 'includeclasses.php';
 
 /**
  * @var $con
@@ -7,11 +7,11 @@
 
 class Suite
 {
-    public $id;
-    public $name;
-    public $description;
-    public $productid;
-    public $con;
+    private int $id;
+    private string $name;
+    private string $description;
+    private string $productid;
+    private mysqli $con;
 
     function __construct($id, $con) {
         $this->id = $id;
@@ -72,7 +72,7 @@ class Suite
         $testcases = array();
         foreach ($testCase_list as $row)
         {
-            $testcases[] = new Step($row['id'],$this->con);
+            $testcases[] = new TestCase($row['id'],$this->con);
         }
         return $testcases;
     }

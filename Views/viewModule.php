@@ -23,7 +23,7 @@ function draw_div_Module(Module $module) {
     }
 }
 //modulelist, addEditModule.php
-function draw_add_module($return_tag_id, $phpfile, $productid, $con)
+function draw_add_module($phpfile, $productid, $con)
 {
     $returnstr =  "<script>
 /** add module dialog **/
@@ -99,11 +99,13 @@ $( function addModuleDialog() {
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
+                console.log('xhttp.responseText', xhttp.responseText);
                 // alert(xhttp.responseText);
-                document.getElementById('".$return_tag_id."').innerHTML = this.responseText;
+                //document.getElementById('".$return_tag_id."').innerHTML = this.responseText;
             }
         };
         xhttp.send(params);
+        location.reload();
     }
 
 
@@ -171,10 +173,10 @@ $( function addModuleDialog() {
         foreach ($productlist as $row)
         {
             if($row['id']==$productid) {
-                $returnstr .= "<option value='" . $row['id'] . "' selected>" . $row['$name'] . "</option>";
+                $returnstr .= "<option value='" . $row['id'] . "' selected>" . $row['name'] . "</option>";
             }
             else {
-                $returnstr .= "<option value='" . $row['id'] . "'>" . $row['$name'] . "</option>";
+                $returnstr .= "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
             }
         }
     }

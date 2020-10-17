@@ -3,7 +3,7 @@ include 'viewModule.php';
 function draw_testcase_div_with_modules(TestCase $testCase)
 {
     $returnstr = "<div class='group'>
-                        <h3>" . $testCase->get_name() . "</h3><input type='button' class='button' onclick='alert(\"you clicked!\")'>
+                        <h3>" . $testCase->get_name() . "</h3>
                         <div>
                             <p>TestRailID: " . $testCase->get_testRailId() . "</p>
                             <p>Description: " . $testCase->get_description() . "</p>
@@ -49,7 +49,7 @@ function draw_testcase_accordion($testcaselist)
             });
         });
     </script>
-    <div id='suites_accordion'>";
+    <div id='testcase_accordion'>";
     foreach ($testcaselist as $testcase)
     {
         $returnstr .= draw_testcase_div_with_modules($testcase);
@@ -58,7 +58,7 @@ function draw_testcase_accordion($testcaselist)
     return $returnstr;
 }
 
-function draw_add_testcase($return_tag_id, $phpfile, $productid, $con)
+function draw_add_testcase($phpfile, $productid, $con)
 {
     $returnstr = "<script>
 /** add testcase dialog **/
@@ -153,10 +153,12 @@ if ( o.val() ==  0 || o.val() ==  null) {
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 // alert(xhttp.responseText);
-                document.getElementById('" . $return_tag_id . "').innerHTML = this.responseText;
+                //document.getElementById('" . $return_tag_id . "').innerHTML = this.responseText;
+                console.log('xhttp.responseText', xhttp.responseText);
             }
         };
         xhttp.send(params);
+        location.reload();
     }
 
 

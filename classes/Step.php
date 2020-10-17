@@ -1,4 +1,5 @@
 <?php
+include_once 'includeclasses.php';
 
 class Step
 {
@@ -101,7 +102,7 @@ class Step
         }
     }
 
-    function bindToModel($moduleid)
+    function bindToModule($moduleid)
     {
         if ($this->id > 0){
             //Is it bound already?
@@ -116,6 +117,7 @@ class Step
                     die("Could not bind Step with id = " . $this->id . "to module with id = " . $moduleid . PHP_EOL .
                         "Error message = " . $this->con->error);
                 }
+                return $stmt;
             }
         }
     }

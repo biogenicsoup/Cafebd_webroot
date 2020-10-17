@@ -34,6 +34,3 @@ if ($name != "" && $productid != 0) { //hvis der er et navn og det er associeret
     $suite->Update($name, $description, $productid);
 }
 
-$product = new Product($productid, $con);
-echo draw_suite_accordion($product->get_suites());
-

@@ -34,7 +34,7 @@ function draw_product_div_as_link(Product $product, $targeturl)
     return $returnstr;
 }
 
-function draw_add_product($return_tag_id, $phpfile)
+function draw_add_product($phpfile)
 {
     return "<script>
 /** add module dialog **/
@@ -104,11 +104,13 @@ $( function addProductDialog() {
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
+                console.log('xhttp.responseText', xhttp.responseText);
                 //alert(xhttp.responseText);
-                document.getElementById('".$return_tag_id."').innerHTML = this.responseText;
+                //document.getElementById('".$return_tag_id."').innerHTML = this.responseText;
             }
         };
         xhttp.send(params);
+        location.reload();
     }
 
 

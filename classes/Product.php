@@ -1,6 +1,5 @@
 <?php
-include_once 'Suite.php';
-include_once 'TestCase.php';
+include_once 'includeclasses.php';
 
 class Product
 {
@@ -72,8 +71,8 @@ class Product
     }
     
     /**
-     * Returns a list of Suite objects
-     * @return Suite[]
+     * Returns a list of TestCase objects
+     * @return TestCase[]
      */
     function get_testcases()
     {
@@ -84,6 +83,36 @@ class Product
             $testcases[] = new TestCase($row['id'], $this->con);
         }
         return $testcases;
+    }
+    
+    /**
+     * Returns a list of Module objects
+     * @return Module[]
+     */
+    function get_modules()
+    {
+        $sql = "SELECT m.id FROM module m WHERE m.Product_id = ? ORDER BY m.name";
+        $module_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+        $modules = array();
+        foreach ($module_list as $row) {
+            $modules[] = new Module($row['id'], $this->con);
+        }
+        return $modules;
+    }
+    
+    /**
+     * Returns a list of Module objects
+     * @return Module[]
+     */
+    function get_steps()
+    {
+        $sql = "SELECT s.id FROM Step s WHERE s.Product_id = ? ORDER BY s.name";
+        $step_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
+        $steps = array();
+        foreach ($step_list as $row) {
+            $steps[] = new Step($row['id'], $this->con);
+        }
+        return $steps;
     }
 
     function save()

@@ -35,7 +35,3 @@ if ($name != "" && $productid != 0) { //hvis der er et navn og det er associeret
     $module->Update($name, $description, 0, $productid);
 }
 
-$sql = "SELECT m.id, m.name, m.description FROM Module m ORDER BY m.name";
-$module_list = prepared_select($con, $sql, [])->fetch_all(MYSQLI_ASSOC);
-accordion($module_list, "dialogTest.php"); // link to self just for test
-

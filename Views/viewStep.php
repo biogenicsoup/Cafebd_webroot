@@ -83,9 +83,9 @@ function draw_div_with_addData(Step $step)
     return $returnstr;
 }
 
-function draw_add_step($return_tag_id, $phpfile)
+function draw_add_step($phpfile, $productid, $con)
 {
-    return "<script>
+    $returnstr =  "<script>
 /** add module dialog **/
 $( function addStepDialog() {
     var dialog, form,
@@ -94,8 +94,9 @@ $( function addStepDialog() {
         /*emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,*/
         id = $( '#step-id' ),
         name = $( '#step-name' ),
-        func = $( '#step-description' ),
-        allFields = $( [] ).add(id).add( name ).add( func ),
+        func = $( '#step-function' ),
+        product = $( '#product-select' ),
+        allFields = $( [] ).add(id).add( name ).add( func ).add(product),
         tips = $( '.validateTips' );
 
     function updateTips( t ) {
@@ -132,35 +133,39 @@ $( function addStepDialog() {
         var valid = true;
         allFields.removeClass( 'ui-state-error' );
         valid = valid && checkLength( name, 'navn', 3, 16 );
-        valid = valid && checkLength( description, 'funktion', 5, 80 );
+        valid = valid && checkLength( func, 'funktion', 5, 80 );
+        valid = valid && product.val() > 0;
 
         if ( valid ) {
             var i = id.val();
             var n = name.val();
             var f = func.val();
+            var p = product.val();
             dialog.dialog( 'close' );
-            persistStep(i, n, d);
+            persistStep(i, n, f, p);
         }
         return valid;
     }
 
-    function persistStep(i, n, f) {
+    function persistStep(i, n, f, p) {
         var xhttp;
         if (n == '') {
             document.getElementById('".$return_tag_id."').innerHTML = '';
             return;
         }
-        var params = 'id=' + i + '&name=' + n + '&description=' + d;
+        var params = 'id=' + i + '&name=' + n + '&function=' + f + '&productid=' + p;
         xhttp = new XMLHttpRequest();
         xhttp.open('POST', '".$phpfile."', true);
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                // alert(xhttp.responseText);
-                document.getElementById('".$return_tag_id."').innerHTML = this.responseText;
+                /*alert(xhttp.responseText);*/
+                console.log('xhttp.responseText', xhttp.responseText);
+                //document.getElementById('".$return_tag_id."').innerHTML = this.responseText;
             }
         };
         xhttp.send(params);
+        location.reload();
     }
 
 
@@ -183,7 +188,7 @@ $( function addStepDialog() {
 
     form = dialog.find( 'form' ).on( 'submit', function( event ) {
         event.preventDefault();
-        addToModule();
+        addStep();
     });
 
     $( '#create-step' ).button().on( 'click', function() {
@@ -210,10 +215,32 @@ $( function addStepDialog() {
       <label for='function'>Function</label>
       <input type='text' name='function' id='step-function' value='' class='text ui-widget-content ui-corner-all'>
       <input type='hidden' name='id' id='step-id' value='0' >
+      <select name='product' id='product-select'>";
+
+    $products = new Products($con);
+    $productlist = $products->get_products_list();
+
+    if ($productid == 0) //we have an unknown product
+    {
+        $returnstr .= "<option value='' selected disabled hidden>Vælg produkt</option>";
+        foreach ($productlist as $row) {
+            $returnstr .= "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
+
+        }
+    } else {
+        foreach ($productlist as $row) {
+            if ($row['id'] == $productid) {
+                $returnstr .= "<option value='" . $row['id'] . "' selected>" . $row['name'] . "</option>";
+            } else {
+                $returnstr .= "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
+            }
+        }
+    }
+    $returnstr .= "</select>   
       <!-- Allow form submission with keyboard without duplicating the dialog button -->
       <input type='submit' tabindex='-1' style='position:absolute; top:-10000px'>
     </fieldset>
   </form>
-</div><button id='create-step'>Opret step</button>
-";
+</div><button class='btn sqaure_bt' id='create-step'>Opret step</button>";
+    return $returnstr;
 }

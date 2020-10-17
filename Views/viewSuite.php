@@ -1,5 +1,6 @@
 <?php
 include_once __DIR__ .'/../classes/Products.php';
+
 function draw_suite_div_with_Testcases(Suite $suite)
 {
     $returnstr = "<div class='group'>
@@ -56,7 +57,7 @@ function draw_suite_accordion($suitelist)
     return $returnstr;
 }
 
-function draw_add_suite($return_tag_id, $phpfile, $productid, $con)
+function draw_add_suite($phpfile, $productid, $con)
 {
     $returnstr = "<script>
 /** add suite dialog **/
@@ -132,11 +133,13 @@ $( function addSuiteDialog() {
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
+                console.log('xhttp.responseText', xhttp.responseText);
                 // alert(xhttp.responseText);
-                document.getElementById('" . $return_tag_id . "').innerHTML = this.responseText;
+                //document.getElementById('" . $return_tag_id . "').innerHTML = this.responseText;
             }
         };
         xhttp.send(params);
+        location.reload();
     }
 
 

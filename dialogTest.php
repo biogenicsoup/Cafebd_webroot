@@ -19,7 +19,7 @@ include 'Views/viewModule.php';
  */
 
 
-echo draw_add_module('modulelist','addEditModule.php', 0, $con);
+echo draw_add_module('addEditModule.php', 0, $con);
 
 $sql = "SELECT m.id, m.name, m.description FROM Module m ORDER BY m.name";
 $module_list = prepared_select($con, $sql, [])->fetch_all(MYSQLI_ASSOC);

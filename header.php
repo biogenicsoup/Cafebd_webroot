@@ -9,10 +9,10 @@ include 'session.php';
 
 if (isset($_POST['productchange'])) // new product has been selected
 {
-    $productId = $_POST['productchange'];
+    $productid = $_POST['productchange'];
     $sql = "UPDATE login SET lastProduct=? WHERE name=? and password=?";
-    $affected_rows = prepared_query($con, $sql, [$productId, $_SESSION['myusername'], $_SESSION['mypassword']])->affected_rows;
-    $_SESSION['product'] = $productId;
+    $affected_rows = prepared_query($con, $sql, [$productid, $_SESSION['myusername'], $_SESSION['mypassword']])->affected_rows;
+    $_SESSION['product'] = $productid;
 }
 
 echo "

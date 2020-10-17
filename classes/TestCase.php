@@ -1,4 +1,5 @@
 <?php
+include_once 'includeclasses.php';
 /**
  * Class TestCase
  *  */
@@ -8,7 +9,7 @@ class TestCase
     public int $id;
     public string $name;
     public string $description;
-    public int $testrailid;
+    public string $testrailid;
     public int $scriptversion;
     public int $testtypeid;
     public mysqli $con;
@@ -20,7 +21,7 @@ class TestCase
         $this->con = $con;
         $this->name = "";
         $this->description = "";
-        $this->testrailid = 0;
+        $this->testrailid = "";
         $this->scriptversion = 1;
         $this->testtypeid = 1;
 
@@ -30,7 +31,7 @@ class TestCase
             $data_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
             $this->name = $data_list[0]['name'];
             $this->description = $data_list[0]['description'];
-            $this->testrailid = (int) $data_list[0]['$testrailid'];
+            $this->testrailid = $data_list[0]['testRailId'];
             $this->scriptversion = $data_list[0]['scriptVersion'];
             $this->testtypeid = $data_list[0]['TestType_id'];
             $this->productid = $data_list[0]['Product_id'];
@@ -118,14 +119,14 @@ class TestCase
             $sql="SELECT * FROM module_step ms
                   JOIN module m on ms.Module_id = m.id
                   JOIN testcase_module tcm on m.id = tcm.Module_id 
-                  WHERE ms.Step_id = ? AND tcm.TestCase_id = ?";
-            $data_list = prepared_select($this->con, $sql, [$stepid, $this->id])->fetch_all(MYSQLI_ASSOC);
+                  WHERE ms.Step_id = ? AND tcm.TestCase_id = ? AND m.hidden = ?";
+            $data_list = prepared_select($this->con, $sql, [$stepid, $this->id,1])->fetch_all(MYSQLI_ASSOC);
             if(count($data_list)==0)
             {  // create hidden module and bind it to testcase then bind step to module
                 //module
                 $modulename = "testcase-".$this->id . " to step-" .$stepid;
-                $sql = "INSERT INTO module(name) VALUE (?)";
-                $stmt = prepared_query($this->con, $sql, [$modulename]);
+                $sql = "INSERT INTO module(name, Product_id) VALUE (?, ?)";
+                $stmt = prepared_query($this->con, $sql, [$modulename, $this->productid]);
                 $moduleid = $this->con->insert_id;
                 if($stmt->affected_rows < 1)
                 {
@@ -242,7 +243,7 @@ class TestCase
         $modules = array();
         foreach ($module_list as $row)
         {
-            $modules[] = new Module($row['id'],$this->con);
+            $modules[] = new Module($row['Module_id'],$this->con);
         }
         return $modules;
 

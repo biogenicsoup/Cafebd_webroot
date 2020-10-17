@@ -1,10 +1,11 @@
 <?php
+include_once 'includeclasses.php';
 
 class Module
 {
     private int $id;
     private string $name;
-    private string $description;
+    private $description;
     private int $hidden;
     private mysqli $con;
     private int $productid;
@@ -14,7 +15,7 @@ class Module
         $this->id = $id;
         $this->con = $con;
 
-        if ($this->id > 0) //get step
+        if ($this->id > 0) //get module
         {
             $sql = "SELECT m.name, m.description, m.hidden, m.Product_id  FROM module m WHERE id = ?";
             $data_list = prepared_select($this->con, $sql, [$this->id])->fetch_all(MYSQLI_ASSOC);
@@ -183,7 +184,7 @@ class Module
         $steps = array();
         foreach ($step_list as $row)
         {
-            $steps[] = new Step($row['id'],$this->con);
+            $steps[] = new Step($row['Step_id'],$this->con);
         }
         return $steps;
     }
