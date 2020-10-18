@@ -51,11 +51,10 @@ function draw_div_edit_form_with_data(Step $step) {
 function draw_step_div_with_data(Step $step)
 {
     $returnstr = "<div class='group'>
-                        <h3>" . $step->get_name() . "</h3><input type='button' class='button' onclick='alert(\"you clicked!\")'>
+                        <h3>" . $step->get_name() . "</h3>
                         <div>
                             <p>" . $step->get_function() . "</p>
                             <ul>";
-    $viewstepdata = new ViewStepData();
     foreach ($step->get_stepData() as $stepdata) {
         $returnstr .= $viewstepdata->draw_li($stepdata);
     }
@@ -65,18 +64,17 @@ function draw_step_div_with_data(Step $step)
     return $returnstr;
 }
 
-function draw_div_with_addData(Step $step)
+function draw_step_div_with_addData(Step $step)
 {
     $returnstr = "<div class='group'>
-                        <h3>" . $step->get_name() . "</h3><input type='button' class='button' onclick='alert(\"you clicked!\")'>
+                        <h3>" . $step->get_name() . "</h3>
                         <div>
                             <p>" . $step->get_function() . "</p>
                             <ul>";
-    $viewstepdata = new ViewStepData();
     foreach ($step->get_stepData() as $stepdata) {
-        $returnstr .= $viewstepdata->draw_li($stepdata);
+        $returnstr .= draw_stepdata_li($stepdata);
     }
-    $returnstr .= $viewstepdata->draw_add_li($step, "stepdata");
+    $returnstr .= draw_add_stepdata('addEditStepData.php', $step->get_id());
     $returnstr .= "    </ul>
                         </div>
                       </div>";
