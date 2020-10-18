@@ -164,8 +164,8 @@ if ( o.val() ==  0 || o.val() ==  null) {
 
     dialog = $( '#testcase-dialog-form' ).dialog({
         autoOpen: false,
-        height: 300,
-        width: 350,
+        height: 500,
+        width: 400,
         modal: true,
         buttons: {
             'Opret testcase': addToTestcase,
@@ -203,14 +203,14 @@ if ( o.val() ==  0 || o.val() ==  null) {
  
   <form>
     <fieldset>
-      <label for='name'>Name</label>
-      <input type='text' name='name' id='testcase-name' value='' class='text ui-widget-content ui-corner-all'>
-      <label for='description'>Description</label>
-      <input type='text' name='description' id='testcase-description' value='' class='text ui-widget-content ui-corner-all'>
-      <label for='description'>TestRailID</label>
-      <input type='text' name='testrailid' id='testcase-testrailid' value='' class='text ui-widget-content ui-corner-all'>
+      <label for='testcase-name'>Name:</label>
+      <input type='text' name='name' id='testcase-name' value='' class='text ui-widget-content ui-corner-all'><br>
+      <label for='testcase-description'>Description:</label>
+      <input type='text' name='description' id='testcase-description' value='' class='text ui-widget-content ui-corner-all'><br>
+      <label for='testcase-testrailid'>TestRailID:</label>
+      <input type='text' name='testrailid' id='testcase-testrailid' value='' class='text ui-widget-content ui-corner-all'><br>
       <input type='hidden' name='id' id='testcase-id' value='0' >
-      <label for='testtype'>Testtype</label>
+      <label for='testtype-select'>Testtype:</label>
       <select name='testtype' id='testtype-select'>";
     
       $products = new Products($con);
@@ -221,7 +221,7 @@ if ( o.val() ==  0 || o.val() ==  null) {
             $returnstr .= "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
         }
         $returnstr .= "</select><br>
-      <label for='product'>Produkt</label>
+      <label for='product-select'>Produkt:</label>
       <select name='product' id='product-select'>";
 
     

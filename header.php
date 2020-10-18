@@ -1,4 +1,5 @@
 <?php
+include 'defaults.php';
 include 'head.php';
 include 'connect.php';
 include 'session.php';
@@ -92,10 +93,12 @@ else {
                     <li><a href='engage.php'>Services Detail</a></li>
                   </ul>
                 </li>
-                <li> <a href='Page_suites.php'>AutotestData</a>
+                <li> <a href='Page_Products.php'>AutotestData</a>
                   <ul>
+                    <li><a href='Page_Products.php'>Products</a></li>
                     <li><a href='Page_suites.php'>Suites</a></li>
-                    <li><a href='testCases.php'>Testcases</a></li>
+                    <li><a href='Page_testCases.php'>Testcases</a></li>
+                    <li><a href='Page_modules.php'>Modules</a></li>
                   </ul>
                 </li>
                 <li> <a href='it_contact.html'>Kontakt</a>

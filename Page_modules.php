@@ -3,19 +3,6 @@ $overskrift = "Modules";
 $hovertext = "'Modules'";
 $pagename = "Region Midt: Modules";
 
-$productid = 0;
-if (isset($_POST['id']))
-{
-    $productid = $_POST['id'];
-} else if (isset($_GET['id']))
-{
-    $productid = $_GET['id'];
-}
-if($productid == 0)
-{
-    header('Location: Page_products.php');
-    exit("could not find product id: redirected to page_products.php");
-}
 
 include_once 'defaults.php';
 include_once 'header.php';
@@ -77,15 +64,17 @@ echo "  </div>
 echo "<script>";
         foreach ($product->get_modules() as $module)
         {
-            echo "sortable('.js-sortable-connected-".$module->get_id()."', {
+            if($module->get_hidden() != 1)
+            {
+                echo "sortable('.js-sortable-connected-".$module->get_id()."', {
 			forcePlaceholderSize: true,
 			acceptFrom: '.js-sortable-steps, .js-sortable-connected-".$module->get_id()."',
 			handle: '.js-handle',
 			items: 'li',
 			placeholderClass: 'border border-white bg-orange mb1'
-		});
+                    });
             
-                document.querySelector('.js-sortable-connected-".$module->get_id()."').addEventListener('sortupdate', function(e){
+                    document.querySelector('.js-sortable-connected-".$module->get_id()."').addEventListener('sortupdate', function(e){
 			console.log('Sortupdate: ', e.detail);
 			console.log('Container: ', e.detail.origin.container, ' -> ', e.detail.destination.container);
 			console.log('Index: '+e.detail.origin.index+' -> '+e.detail.destination.index);
@@ -112,18 +101,19 @@ echo "<script>";
                         };
                         xhttp.send(params);
                         
-		});
+                    });
 
-		document.querySelector('.js-sortable-connected-".$module->get_id()."').addEventListener('sortstart', function(e){
+                    document.querySelector('.js-sortable-connected-".$module->get_id()."').addEventListener('sortstart', function(e){
 			console.log('Sortstart: ', e.detail);
-		});
+                    });
 
-		document.querySelector('.js-sortable-connected-".$module->get_id()."').addEventListener('sortstop', function(e){
+                    document.querySelector('.js-sortable-connected-".$module->get_id()."').addEventListener('sortstop', function(e){
 			console.log('Sortstop: ', e.detail);
                         
-		});";
+                    });";
+            }  
         }
-         echo "          
+        echo "          
                 sortable('.js-sortable-steps', {
 		  forcePlaceholderSize: true,
 		  copy: true,

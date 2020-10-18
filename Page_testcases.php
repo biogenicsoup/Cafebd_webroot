@@ -3,21 +3,6 @@ $overskrift = "Testcases";
 $hovertext = "'Testcases'";
 $pagename = "Region Midt: Testcases";
 
-$productid = 0;
-if (isset($_POST['id']))
-{
-    $productid = $_POST['id'];
-} else if (isset($_GET['id']))
-{
-    $productid = $_GET['id'];
-}
-if($productid == 0)
-{
-    header('Location: Page_products.php');
-    exit("could not find product id: redirected to page_products.php");
-}
-
-include_once 'defaults.php';
 include_once 'header.php';
 include_once 'banner.php';
 //include 'components.php';
@@ -70,6 +55,7 @@ foreach ($product->get_testcases() as $testcase)
             </div>";
     
 }
+echo draw_add_testcase('addEditTestCase.php', $productid, $con);
 echo"   </div>";
 echo"				
 	<div class='p3 bg-orange white col col-6'>

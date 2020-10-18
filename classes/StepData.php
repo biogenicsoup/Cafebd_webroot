@@ -25,12 +25,14 @@ class StepData
             $this->stepid=$sd_list[0]['Step_id'];
         }
     }
-    function create ($name, $value, $stepid) {
+    function update ($name, $value, $stepid) {
+        $this->name = $name;
+        $this->value = $value;
+        $this->stepid = $stepid;
+        
         if ($this->id == 0) //data is not persisted, create it
         {
-            $this->name = $name;
-            $this->value = $value;
-            $this->stepid = $stepid;
+            
             $sql = "INSERT INTO stepdata (name, value, Step_id) VALUE (?, ?, ?)";
             $stmt = prepared_query($this->con, $sql, [$this->name, $this->value, $this->stepid]);
             if ($this->con->insert_id < 1) {
@@ -38,6 +40,10 @@ class StepData
                     "Error message = " . $this->con->error);
             }
             $this->id = $this->con->insert_id;
+        }
+        else 
+        {
+            $this->save();
         }
     }
     function get_id() {
