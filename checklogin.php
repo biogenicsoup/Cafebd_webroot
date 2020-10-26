@@ -47,7 +47,7 @@
 		//}
 		//else
 		//{
-			header('location:Page_suites.php');
+			header('location:Page_products.php');
 		//}
 	}
 	else 

@@ -20,10 +20,21 @@ include_once 'Views/viewTestCase.php';
 echo "<link rel='stylesheet' href='css/basscss.css'>";
 echo "<script src='js/html5sortable.js'></script>";
 
+echo "<script>
+	$( function() {
+		$( '#accordion' )
+			.accordion({
+				header: '> div > h3 '
+			})
+	} );
+	</script>";    
+
+
 echo "
     <section class='mb3 mx-auto col col-12'>
         <div class='p3 bg-white black col col-6'>
-            <h2 class='h3 m0'>Træk et step over i et module for at tilføje den. </h2>";
+            <h2 class='h3 m0'>Træk et step over i et module for at tilføje den. </h2>
+            <div id='accordion' class='ui-accordion ui-widget ui-helper-reset ui-sortable' role='tablist'>";
 
 $product = new Product($productid, $con);
 foreach ($product->get_modules() as $module)
@@ -31,25 +42,27 @@ foreach ($product->get_modules() as $module)
     if($module->get_hidden() != 1) //it is not hidden
     {
         echo"
-            <div class='group'>
-                <h3>" . $module->get_name() . "</h3>
-                <p>Description: " . $module->get_description() . "</p>
-                <ul class='p2 border maroon border-maroon js-sortable-connected-" . $module->get_id() . " list flex flex-column list-reset' id='".$module->get_id()."' aria-dropeffect='move'>";
+                <div class='group'>
+                    <h3>" . $module->get_name() . "</h3>
+                    <div><p>Description: " . $module->get_description() . "</p>
+                        <ul class='p2 border maroon border-maroon js-sortable-connected-" . $module->get_id() . " list flex flex-column list-reset' id='".$module->get_id()."' aria-dropeffect='move'>";
         foreach ($module->get_steps() as $step) {
-            echo    "<li class='p1 mb1 blue bg-white js-handle px1' draggable='true' role='option' id='".$step->get_id()."' aria-grabbed='false'><a href='#'>".$step->get_name() ."</a></li>";
+            echo "          <li class='p1 mb1 blue bg-white js-handle px1' draggable='true' role='option' id='".$step->get_id()."' aria-grabbed='false'><a href='#'>".$step->get_name() ."</a></li>";
         }
         echo " 
-                </ul>
-            </div>";
+                        </ul>
+                    </div>
+                </div>";
     }
 }
-echo        "<div>";
-            echo draw_add_module('addEditModule.php', $productid, $con);
+echo "      </div>
+            <div>";
+                echo draw_add_module('addEditModule.php', $productid, $con);
 echo "      </div>
         </div>";
+
 echo"
-				
-	<div class='p3 bg-orange white col col-6'>
+        <div class='p3 bg-orange white col col-6'>
             <ul class='js-sortable-steps list flex flex-column list-reset' id='0' aria-dropeffect='move'>";
 foreach ($product->get_steps() as $step)
 {

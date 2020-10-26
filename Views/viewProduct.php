@@ -107,10 +107,11 @@ $( function addProductDialog() {
                 console.log('xhttp.responseText', xhttp.responseText);
                 //alert(xhttp.responseText);
                 //document.getElementById('".$return_tag_id."').innerHTML = this.responseText;
+                location.reload();
             }
         };
         xhttp.send(params);
-        location.reload();
+        
     }
 
 

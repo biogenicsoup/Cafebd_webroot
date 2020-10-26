@@ -27,7 +27,7 @@ if (isset($_POST['productid']))
 
 if (!isset($_SESSION['product']))
 {
-    $_SESSION['product'] = 1;
+    $_SESSION['product'] = 0;
 }
 $productid=$_SESSION['product'];
 

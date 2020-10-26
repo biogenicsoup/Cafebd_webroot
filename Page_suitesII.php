@@ -15,9 +15,8 @@ include_once 'Views/viewTestCase.php';
  * @var $con
  */
 
-echo "<link rel='stylesheet' href='css/basscss.css'>";
+echo "<link rel='stylesheet' href='http://lukasoppermann.github.io/html5sortable/basscss.css'>";
 echo "<script src='js/html5sortable.js'></script>";
-
 
 echo "<script>
 	$( function() {

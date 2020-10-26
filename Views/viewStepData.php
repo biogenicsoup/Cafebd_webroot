@@ -112,10 +112,11 @@ if ( o.val() ==  0 || o.val() ==  null) {
                 // alert(xhttp.responseText);
                 //document.getElementById('" . $return_tag_id . "').innerHTML = this.responseText;
                 console.log('xhttp.responseText', xhttp.responseText);
+                location.reload();
             }
         };
         xhttp.send(params);
-        location.reload();
+        
     }
 
 

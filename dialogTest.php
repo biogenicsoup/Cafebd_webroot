@@ -10,7 +10,7 @@ include 'header.php';
 include 'banner.php';
 include 'mustbeloggedin.php';
 include 'components.php';
-include 'classes/Module.php';
+include_once 'classes/includeclasses.php';
 include 'Views/viewModule.php';
 
 

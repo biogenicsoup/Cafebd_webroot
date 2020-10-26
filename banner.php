@@ -17,7 +17,7 @@ echo"
               <h1 class='page-title'>".$overskrift."</h1>
               <ol class='breadcrumb'>
                 <li><a href='index.php'>Home</a></li>";
-if($productid != null && $productid > 0)
+if(!is_null($productid) && $productid > 0)
 { 
     $product = new Product($productid, $con);
     echo       "<li><a href='Page_products.php'>".$product->get_name()."</a></li>";

@@ -18,43 +18,55 @@ include_once 'Views/viewTestCase.php';
 echo "<link rel='stylesheet' href='css/basscss.css'>";
 echo "<script src='js/html5sortable.js'></script>";
 
+echo "<script>
+	$( function() {
+		$( '#accordion' )
+			.accordion({
+				header: '> div > h3 '
+			})
+	} );
+	</script>";    
+
+
 echo "
     <section class='mb3 mx-auto col col-12'>
         <div class='p3 bg-white black col col-6'>
-            <h2 class='h3 m0'>Træk et step eller et module over i din testcase. </h2>";
+            <h2 class='h3 m0'>Træk et step eller et module over i din testcase. </h2>
+                <div id='accordion' class='ui-accordion ui-widget ui-helper-reset ui-sortable' role='tablist'>";
 
 $product = new Product($productid, $con);
 foreach ($product->get_testcases() as $testcase)
 {
     echo"
-            <div class='group'>
-                <h3>" . $testcase->get_name() . "</h3>
-                <p>Description: " . $testcase->get_description() . "</p>
-                <ul class='p2 border maroon border-maroon js-sortable-connected-" . $testcase->get_id() . " list flex flex-column list-reset' id='".$testcase->get_id()."' aria-dropeffect='move'>";
+                    <div class='group'>
+                        <h3>" . $testcase->get_name() . "</h3>
+                        <div><p>Description: " . $testcase->get_description() . "</p>
+                            <ul class='p2 border maroon border-maroon js-sortable-connected-" . $testcase->get_id() . " list flex flex-column list-reset' id='".$testcase->get_id()."' aria-dropeffect='move'>";
     foreach ($testcase->get_modules() as $module) {
         if($module->get_hidden() == 1)
         { // hidden module. Draw the single childstep
             $step = ($module->get_steps())[0]; // get the first step 
-            echo     "<li class='p1 mb1 blue bg-white js-handle px1' draggable='true' role='option' id='".$step->get_id()."' aria-grabbed='false'><a href='#'>".$step->get_name() ."</a></li>";
+            echo "              <li class='p1 mb1 blue bg-white js-handle px1' draggable='true' role='option' id='".$step->get_id()."' aria-grabbed='false'><a href='#'>".$step->get_name() ."</a></li>";
         }
         else //Draw the module
         {
-            echo "  <li class='p1 mb1 border border-white white bg-orange' role='option' aria-grabbed='false'>
-                        <div class='mb1 js-handle px1' draggable='true'>".$module->get_name()."</div>
-                        <ul class='js-sortable-inner-connected list flex flex-column list-reset m0 py1' aria-dropeffect='move'>";
+            echo "              <li class='p1 mb1 border border-white white bg-orange' role='option' aria-grabbed='false'>
+                                    <div class='mb1 js-handle px1' draggable='true'>".$module->get_name()."</div>
+                                    <ul class='js-sortable-inner-connected list flex flex-column list-reset m0 py1' aria-dropeffect='move'>";
             foreach ($module->get_steps() as $step) {
-                echo "      <li class='p1 mb1 border border-blue blue bg-white item js-inner-handle px1' role='option' id='".$step->get_id()."' aria-grabbed='false' draggable='true'><a href='#'>".$step->get_name() ."</a></li>";
+                echo "                  <li class='p1 mb1 border border-blue blue bg-white item js-inner-handle px1' role='option' id='".$step->get_id()."' aria-grabbed='false' draggable='true'><a href='#'>".$step->get_name() ."</a></li>";
             }                            
-            echo "      </ul>
-                    </li>";
+            echo "                  </ul>
+                                </li>";
         }
            
     }
     echo " 
-                </ul>
-            </div>";
-    
+                            </ul>
+                        </div>
+                    </div>";
 }
+echo "          </div>";
 echo draw_add_testcase('addEditTestCase.php', $productid, $con);
 echo"   </div>";
 echo"				
@@ -82,8 +94,9 @@ foreach ($product->get_steps() as $step)
 {
     echo "      <li class='p1 mb1 blue bg-green js-handle px1' draggable='true' role='option' id='s-".$step->get_id()."' aria-grabbed='false'><a href='#'>".$step->get_name() ."</a></li>";                                 
 }
-echo "      </ul>
-        </div>
+echo "      </ul>";
+            echo draw_add_step('addEditStep.php', $productid, $con);
+echo "  </div>
     </section>";
 
 

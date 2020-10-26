@@ -96,9 +96,8 @@ $( function addTestcaseDialog() {
         }
     }
     
-    function checkSelect( o, message ) {
-alert('value = ' + o.val());        
-if ( o.val() ==  0 || o.val() ==  null) {
+    function checkSelect( o, message ) {     
+        if ( o.val() ==  0 || o.val() ==  null) {
             o.addClass( 'ui-state-error' );
             updateTips( message );
             return false;
@@ -145,8 +144,6 @@ if ( o.val() ==  0 || o.val() ==  null) {
             return;
         }
         var params = 'id=' + i + '&name=' + n + '&description=' + d + '&testrailid=' + tr + '&testtypeid=' + tt + '&productid=' + p;
-        alert('params = ' + params);
-        alert('&productid=' + p);
         xhttp = new XMLHttpRequest();
         xhttp.open('POST', '" . $phpfile . "', true);
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -155,10 +152,11 @@ if ( o.val() ==  0 || o.val() ==  null) {
                 // alert(xhttp.responseText);
                 //document.getElementById('" . $return_tag_id . "').innerHTML = this.responseText;
                 console.log('xhttp.responseText', xhttp.responseText);
+                location.reload();
             }
         };
         xhttp.send(params);
-        location.reload();
+        
     }
 
 
