@@ -78,7 +78,8 @@ echo "<script>";
 			acceptFrom: '.js-sortable-testcases',
 			handle: '.js-handle',
 			items: 'li',
-			placeholderClass: 'border border-white bg-orange mb1'
+			placeholderClass: 'border border-white bg-orange mb1',
+                        hoverClass: 'bg-yellow'
 		});
             
                 document.querySelector('.js-sortable-connected-".$suite->get_id()."').addEventListener('sortupdate', function(e){
@@ -124,80 +125,9 @@ echo "<script>";
 		  copy: true,
 				acceptFrom: false,
 		  placeholderClass: 'mb1 bg-navy border border-yellow',
-		});
-		sortable('.js-sortable-copy-target', {
-		forcePlaceholderSize: true,
-			acceptFrom: '.js-sortable-copy,.js-sortable-copy-target',
-		placeholderClass: 'mb1 border border-maroon',
-	  });
-		sortable('.js-grid', {
-					forcePlaceholderSize: true,
-					placeholderClass: 'col col-4 border border-maroon'
-				});
-		sortable('.js-connected', {
-			forcePlaceholderSize: true,
-			connectWith: '.js-connected',
-			handle: '.js-handle',
-			items: 'li',
-			placeholderClass: 'border border-white bg-orange mb1'
-		});
-		sortable('.js-sortable-inner-connected', {
-			forcePlaceholderSize: true,
-			connectWith: 'js-inner-connected',
-			handle: '.js-inner-handle',
-			items: '.item',
-                        maxItems: 3,
-			placeholderClass: 'border border-white bg-orange mb1'
+                  hoverClass: 'bg-yellow'
 		});
 		
-
-		sortable('.js-sortable-buttons', {
-			forcePlaceholderSize: true,
-			items: 'li',
-			placeholderClass: 'border border-white mb1',
-                        hoverClass: 'bg-yellow'
-		});
-		// buttons to add items and reload the list
-		// separately to showcase issue without reload
-		/*document.querySelector('.js-add-item-button').addEventListener('click', function(){
-			doc = new DOMParser().parseFromString(`<li class='p1 mb1 blue bg-white'>new item</li>`, 'text/html').body.firstChild;
-			document.querySelector('.js-sortable-buttons').appendChild(doc);
-		});*/
-
-		/*document.querySelector('.js-reload').addEventListener('click', function(){
-			console.log('Options before re-init:');
-			console.log(document.querySelector('.js-sortable-buttons').h5s.data.opts);
-			sortable('.js-sortable-buttons');
-			console.log('Options after re-init:');
-			console.log(document.querySelector('.js-sortable-buttons').h5s.data.opts);
-		});*/
-		// JS DISABLED
-		/*document.querySelector('.js-disable').addEventListener('click', function(){
-			var list = document.querySelector('[data-disabled]');
-			if ( list.getAttribute('data-disabled') === 'false' ) {
-				this.innerHTML = 'Enable';
-				sortable(list, 'disable');
-				list.setAttribute('data-disabled', true);
-				list.classList.add('muted');
-			} else {
-				this.innerHTML = 'Disable';
-				sortable(list, 'enable');
-				list.setAttribute('data-disabled', false);
-				list.classList.remove('muted');
-			}
-		});*/
-
-		// Destroy & Init
-		/*document.querySelector('.js-destroy').addEventListener('click', function(){
-			sortable('.js-sortable-buttons', 'destroy');
-		});*/
-		/*document.querySelector('.js-init').addEventListener('click', function(){
-			sortable('.js-sortable-buttons', {
-				forcePlaceholderSize: true,
-				items: 'li',
-				placeholderClass: 'border border-white mb1'
-			})
-		});*/
 	</script>";
 
      
