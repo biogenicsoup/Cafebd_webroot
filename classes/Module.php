@@ -51,19 +51,20 @@ class Module
 
 
 
-    function bindToTestcase($testcaseId)
+    function bindToTestcase($testcaseId, $modulenumber)
     {
         if ($this->id > 0) {
             //Is it bound already?
             $sql = "SELECT * FROM testcase_module tm WHERE tm.TestCase_id =? AND tm.module_id =?";
             $data_list = prepared_select($this->con, $sql, [$testcaseId, $this->id])->fetch_all(MYSQLI_ASSOC);
-            if (count($data_list) == 0) {  //get module number (this will be placed last)
-                $sql = "SELECT * FROM testcase_module tm WHERE tm.TestCase_id =?";
-                $numelemets_list = prepared_select($this->con, $sql, [$testcaseId])->fetch_all(MYSQLI_ASSOC);
-
+            if (count($data_list) == 0) {
+                //flyt de andre moduler en tand ned
+                $sql = "UPDATE testcase_module SET moduleNumber = moduleNumber +1 WHERE moduleNumber>=? AND TestCase_id=?";
+                prepared_query($this->con, $sql, [$modulenumber, $testcaseId]);
+                
                 // bind to testcase
                 $sql = "INSERT INTO testcase_module (TestCase_id, Module_id, moduleNumber) VALUES (?,?,?)";
-                $stmt = prepared_query($this->con, $sql, [$testcaseId, $this->id, count($numelemets_list)]);
+                $stmt = prepared_query($this->con, $sql, [$testcaseId, $this->id, $modulenumber]);
                 if ($stmt->affected_rows < 1) {
                     die("Could not bind module with id = " . $this->id . "to testcase with id = " . $testcaseId . PHP_EOL .
                         "Error message = " . $this->con->error);
@@ -72,12 +73,14 @@ class Module
         }
     }
 
-    function unBindFromTestcase($testcaseId)
+    function unBindFromTestcase($testcaseId, $modulenumber)
     {
+            //flyt de andre moduler en tand op
+            $sql = "UPDATE testcase_module SET moduleNumber = moduleNumber -1 WHERE moduleNumber>=? AND TestCase_id=?";
+            prepared_query($this->con, $sql, [$modulenumber, $testcaseId]);
             //delete bindings
             $sql = "DELETE FROM testcase_module WHERE TestCase_id=? AND Module_id=?";
             prepared_query($this->con, $sql, [$testcaseId, $this->id]);
-
     }
 
     function bindToStep($stepid)

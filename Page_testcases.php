@@ -125,7 +125,7 @@ echo "<script>";
                         console.log('originTestcaseId: ',originTestcaseId);
                         console.log('destinationTestcaseId: ',destinationTestcaseId);
                         
-                        var params = 'itemId=' + itemId + '&originTestcaseId=' + originTestcaseId + '&destinationTestcaseId=' + destinationTestcaseId;
+                        var params = 'itemId=' + itemId + '&originTestcaseId=' + originTestcaseId + '&destinationTestcaseId=' + destinationTestcaseId + '&originIndex=' + e.detail.origin.index + '&destinationIndex=' + e.detail.destination.index;
                         xhttp = new XMLHttpRequest();
                         xhttp.open('POST', 'bind_testcase_module.php', true);
                         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');

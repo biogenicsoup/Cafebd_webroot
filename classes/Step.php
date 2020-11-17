@@ -44,7 +44,7 @@ class Step
                 "Error message = " . $this->con->error);
         }
     }
-    function bindToTestcase($testcaseId) {
+    function bindToTestcase($testcaseId, $modulenumber) {
         if ($this->id > 0){
             //Is it bound already?
             $sql="SELECT * FROM module_step ms
@@ -52,7 +52,7 @@ class Step
                   JOIN testcase_module tcm on m.id = tcm.Module_id 
                   WHERE ms.Step_id = ? AND tcm.TestCase_id = ?";
             $data_list = prepared_select($this->con, $sql, [$this->id, $testcaseId])->fetch_all(MYSQLI_ASSOC);
-            if(count($data_list)==0)
+            if(count($data_list)==0) // it is not bound
             {  // create hidden module and bind it to testcase then bind step to module
                 //module
                 $modulename = "testcase-".$testcaseId . " to step-" . $this->id;
@@ -64,9 +64,13 @@ class Step
                     die("Could not create module with name = ". $modulename . PHP_EOL .
                         "Error message = " . $this->con->error);
                 }
+                // move modules down to create space 
+                //flyt de andre moduler en tand ned
+                $sql = "UPDATE testcase_module SET moduleNumber = moduleNumber +1 WHERE moduleNumber>=? AND TestCase_id=?";
+                prepared_query($this->con, $sql, [$modulenumber, $testcaseId]);
                 // bind to testcase
-                $sql = "INSERT INTO testcase_module (TestCase_id, Module_id) VALUES (?,?)";
-                $stmt = prepared_query($this->con, $sql, [$testcaseId, $moduleid]);
+                $sql = "INSERT INTO testcase_module (TestCase_id, Module_id, moduleNumber) VALUES (?,?,?)";
+                $stmt = prepared_query($this->con, $sql, [$testcaseId, $moduleid, $modulenumber]);
                 if($stmt->affected_rows < 1)
                 {
                     die("Could not bind module with id = " . $moduleid . "to testcase with id = " . $testcaseId . PHP_EOL .
@@ -83,7 +87,7 @@ class Step
             }
         }
     }
-    function unBindFromTestcase($testcaseId) {
+    function unBindFromTestcase($testcaseId, $modulenumber) {
         $sql="SELECT ms.Module_id FROM module_step ms
                   JOIN module m on ms.Module_id = m.id
                   JOIN testcase_module tcm on m.id = tcm.Module_id 
@@ -99,15 +103,18 @@ class Step
             prepared_query($this->con, $sql, [$this->id, $moduleid]);
             $sql = "DELETE FROM module WHERE id=?";
             prepared_query($this->con, $sql, [$moduleid]);
+            //flyt de andre moduler en tand op
+            $sql = "UPDATE testcase_module SET moduleNumber = moduleNumber -1 WHERE moduleNumber>=? AND TestCase_id=?";
+            prepared_query($this->con, $sql, [$modulenumber, $testcaseId]);
         }
     }
 
     function bindToModule($moduleid, $stepNumber)
     {
         if ($this->id > 0){
-            //flyt de andre steps en tand op
-            $sql = "UPDATE module_step SET stepNumber = stepNumber -1 WHERE stepNumber>=? AND Module_id=? AND Step_id=?";
-        prepared_query($this->con, $sql, [$stepNumber, $moduleid, $this->id]);
+            //flyt de andre steps en tand ned
+            $sql = "UPDATE module_step SET stepNumber = stepNumber +1 WHERE stepNumber>=? AND Module_id=?";
+            prepared_query($this->con, $sql, [$stepNumber, $moduleid]);
             //Is it bound already?
             $sql="SELECT * FROM module_step ms WHERE Module_id =? AND Step_id =? ";
             $data_list = prepared_select($this->con, $sql, [$moduleid, $this->id])->fetch_all(MYSQLI_ASSOC);
@@ -120,15 +127,15 @@ class Step
                     die("Could not bind Step with id = " . $this->id . "to module with id = " . $moduleid . PHP_EOL .
                         "Error message = " . $this->con->error);
                 }
-                return $stmt;
+                //return $stmt;
             }
         }
     }
-    function unBindFromModel($moduleid, $stepNumber)
+    function unBindFromModule($moduleid, $stepNumber)
     {
         //flyt de andre steps en tand op
-        $sql = "UPDATE module_step SET stepNumber = stepNumber -1 WHERE stepNumber>=? AND Module_id=? AND Step_id=?";
-        prepared_query($this->con, $sql, [$stepNumber, $moduleid, $this->id]);
+        $sql = "UPDATE module_step SET stepNumber = stepNumber -1 WHERE stepNumber>=? AND Module_id=?";
+        prepared_query($this->con, $sql, [$stepNumber, $moduleid]);
         $sql = "DELETE FROM module_step WHERE Step_id=? AND Module_id=?";
         prepared_query($this->con, $sql, [$this->id, $moduleid]);
     }

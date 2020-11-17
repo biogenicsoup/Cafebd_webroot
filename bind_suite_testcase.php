@@ -25,11 +25,11 @@ if (isset($_POST['destinationSuiteId'])) {
 
 if ($testcaseId > 0 ) { 
     $testcase = new TestCase($testcaseId, $con);
-    if($destinationSuiteId > 0) {
-        $testcase->bindToSuite($destinationSuiteId);
-    }
     if($originSuiteId > 0){
         $testcase->unBindFromSuite($originSuiteId);
+    }
+    if($destinationSuiteId > 0) {
+        $testcase->bindToSuite($destinationSuiteId);
     }
 }
 

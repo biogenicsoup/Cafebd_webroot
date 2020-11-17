@@ -13,8 +13,8 @@ if (isset($_POST['stepId'])) {
 }
 
 $originModuleId = 0;
-if (isset($_POST['originModuleIid'])) {
-    $originModuleId = $_POST['originModuleIid'];
+if (isset($_POST['originModuleId'])) {
+    $originModuleId = $_POST['originModuleId'];
 }
 
 $originIndex = -1;
@@ -32,13 +32,19 @@ if (isset($_POST['destinationIndex'])) {
     $destinationIndex = $_POST['destinationIndex'];
 }
 
+echo "stepId = ". $stepId . PHP_EOL;
+echo "originModuleId = ". $originModuleId . PHP_EOL;
+echo "originIndex = ". $originIndex . PHP_EOL;
+echo "destinationModuleId = ". $destinationModuleId . PHP_EOL;
+echo "destinationIndex = ". $destinationIndex . PHP_EOL;
+
 if ($stepId > 0 ) { 
-    $step = new Step($stepId, $con);
-    if($destinationModuleId > 0) {
-        echo $step->bindToModule($destinationModuleId, $destinationIndex);
-    }
+    $step = new Step($stepId, $con); // unbind before bind as only one mind between a step and a module is allowed
     if($originModuleId > 0){
         $step->unBindFromModule($originModuleId, $originIndex);
+    }
+    if($destinationModuleId > 0) {
+        echo $step->bindToModule($destinationModuleId, $destinationIndex);
     }
 }
 
