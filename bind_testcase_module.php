@@ -43,17 +43,15 @@ if($itemId[0] == 's') //the item is a step
     
     $stepid = intval(substr($itemId, 2, strlen($itemId)-2));
     echo "stepid = ". $stepid . PHP_EOL;
+    $step = new Step($stepid, $con);
     
     if($originTestcaseId >0)
     {
-        $testcase = new TestCase($originTestcaseId, $con);
-        $testcase->bindToStep($stepid, $destinationIndex);
+        $step->unBindFromTestcase($originTestcaseId, $originIndex);
     }
-    return;
     if($destinationTestcaseId >0)
     {
-        $testcase = new TestCase($destinationTestcaseId, $con);
-        $testcase->bindToStep($stepid, $destinationIndex);
+        $step->bindToTestcase($destinationTestcaseId, $destinationIndex);
     }
     return;
 }
@@ -61,15 +59,17 @@ if($itemId[0] == 's') //the item is a step
 if($itemId[0] == 'm') //the item is a module
 {
     $moduleid = intval(substr($itemId, 2, strlen($itemId)-2));
+    echo "moduleid = ". $moduleid . PHP_EOL;
+    $module = new Module($moduleid, $con);
+    
+    if($originTestcaseId >0)
+    {
+        $module->unBindFromTestcase($originTestcaseId, $originIndex);
+    }
     if($destinationTestcaseId >0)
     {
-        $testcase = new TestCase($destinationTestcaseId, $con);
-        $testcase->bindToModule($moduleid);
+        $module->bindToTestcase($destinationTestcaseId, $destinationIndex);
     }
     return;
 }
-    
-//$itemId not starting with s or m means this is a reorder 
-
-//todo: implement reorder
 
