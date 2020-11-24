@@ -50,14 +50,14 @@ class Step
             $sql="SELECT * FROM module_step ms
                   JOIN module m on ms.Module_id = m.id
                   JOIN testcase_module tcm on m.id = tcm.Module_id 
-                  WHERE ms.Step_id = ? AND tcm.TestCase_id = ?";
+                  WHERE ms.Step_id = ? AND tcm.TestCase_id = ? AND m.hidden=1";
             $data_list = prepared_select($this->con, $sql, [$this->id, $testcaseId])->fetch_all(MYSQLI_ASSOC);
             if(count($data_list)==0) // it is not bound
             {  // create hidden module and bind it to testcase then bind step to module
                 //module
                 $modulename = "testcase-".$testcaseId . " to step-" . $this->id;
-                $sql = "INSERT INTO module(name) VALUE (?)";
-                $stmt = prepared_query($this->con, $sql, [$modulename]);
+                $sql = "INSERT INTO module (name, Product_id) VALUE (?, ?)";
+                $stmt = prepared_query($this->con, $sql, [$modulename, $this->productid]);
                 $moduleid = $this->con->insert_id;
                 if($stmt->affected_rows < 1)
                 {
