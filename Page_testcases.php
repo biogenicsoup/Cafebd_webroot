@@ -46,11 +46,11 @@ foreach ($product->get_testcases() as $testcase)
         if($module->get_hidden() == 1)
         { // hidden module. Draw the single childstep
             $step = ($module->get_steps())[0]; // get the first step 
-            echo "              <li class='p1 mb1 blue bg-white js-handle px1' draggable='true' role='option' id='".$step->get_id()."' aria-grabbed='false'><a href='#'>".$step->get_name() ."</a></li>";
+            echo "              <li class='p1 mb1 blue bg-white js-handle px1' draggable='true' role='option' id='s-".$step->get_id()."' aria-grabbed='false'><a href='#'>".$step->get_name() ."</a></li>";
         }
         else //Draw the module
         {
-            echo "              <li class='p1 mb1 border border-white white bg-orange' role='option' aria-grabbed='false'>
+            echo "              <li class='p1 mb1 border border-white white bg-orange' id='m-".$module->get_id()."' role='option' aria-grabbed='false'>
                                     <div class='mb1 js-handle px1' draggable='true'>".$module->get_name()."</div>
                                     <ul class='js-sortable-inner-connected list flex flex-column list-reset m0 py1' aria-dropeffect='move'>";
             foreach ($module->get_steps() as $step) {
@@ -92,10 +92,14 @@ echo "      </ul>
             <ul class='js-sortable-steps list flex flex-column list-reset' id='0' aria-dropeffect='move'>";
 foreach ($product->get_steps() as $step)
 {
-    echo "      <li class='p1 mb1 blue bg-green js-handle px1' draggable='true' role='option' id='s-".$step->get_id()."' aria-grabbed='false'><a href='#'>".$step->get_name() ."</a></li>";                                 
+    echo "      <li class='p1 mb1 blue bg-green js-handle px1 searchterm' draggable='true' role='option' id='s-".$step->get_id()."' aria-grabbed='false'><a href='#'>".$step->get_name() ."</a></li>";                                 
 }
 echo "      </ul>";
             echo draw_add_step('addEditStep.php', $productid, $con);
+            echo "<div class='center py1 ml4'>
+						<button class='js-destroy button blue bg-white'>Destroy</button>
+						<button class='js-init button blue bg-white'>Init</button>
+					</div>";
 echo "  </div>
     </section>";
 
@@ -112,7 +116,7 @@ echo "<script>";
 		});
             
                 document.querySelector('.js-sortable-connected-".$testcase->get_id()."').addEventListener('sortupdate', function(e){
-			console.log('Sortupdate: ', e.detail);
+			console.log('Testcase ".$testcase->get_id()."-Sortupdate: ', e.detail);
 			console.log('Container: ', e.detail.origin.container, ' -> ', e.detail.destination.container);
 			console.log('Index: '+e.detail.origin.index+' -> '+e.detail.destination.index);
 			console.log('Element Index: '+e.detail.origin.elementIndex+' -> '+e.detail.destination.elementIndex);
@@ -126,6 +130,7 @@ echo "<script>";
                         console.log('destinationTestcaseId: ',destinationTestcaseId);
                         
                         var params = 'itemId=' + itemId + '&originTestcaseId=' + originTestcaseId + '&destinationTestcaseId=' + destinationTestcaseId + '&originIndex=' + e.detail.origin.index + '&destinationIndex=' + e.detail.destination.index;
+                        console.log('params = ',params);
                         xhttp = new XMLHttpRequest();
                         xhttp.open('POST', 'bind_testcase_module.php', true);
                         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -137,31 +142,121 @@ echo "<script>";
                             }
                         };
                         xhttp.send(params);
-                        
 		});
 
 		document.querySelector('.js-sortable-connected-".$testcase->get_id()."').addEventListener('sortstart', function(e){
-			console.log('Sortstart: ', e.detail);
+			console.log('Testcase ".$testcase->get_id()."-Sortstart: ', e.detail); 
 		});
 
 		document.querySelector('.js-sortable-connected-".$testcase->get_id()."').addEventListener('sortstop', function(e){
-			console.log('Sortstop: ', e.detail);
-                        
+			console.log('Testcase ".$testcase->get_id()."-Sortstop: ', e.detail);                        
 		});";
         }
-         echo "          
+        echo "          
                 sortable('.js-sortable-modules', {
-		  forcePlaceholderSize: true,
+		  //forcePlaceholderSize: true,
 		  copy: true,
-		  acceptFrom: false,
-		  placeholderClass: 'mb1 bg-navy border border-yellow',
+                  placeholderClass: 'mb1 bg-navy border border-yellow',";
+        $testcaselist = $product->get_testcases();
+        if(count($testcaselist)>=1)
+        {  
+            echo "acceptFrom: '";
+            for ($x = 0; $x < count($testcaselist) -1 ; $x++)
+            {
+                $testcase = $testcaselist[$x];
+                echo ".js-sortable-connected-".$testcase->get_id().", ";
+            }
+            echo ".js-sortable-connected-".$testcase->get_id()."',";
+        }
+        else 
+        {
+            echo "acceptFrom: false,";
+        }
+    
+        echo "  
+		});
+                
+                document.querySelector('.js-sortable-modules').addEventListener('sortupdate', function(e){
+			console.log('modules-Sortupdate: ', e.detail);
+			console.log('Container: ', e.detail.origin.container, ' -> ', e.detail.destination.container);
+			console.log('Index: '+e.detail.origin.index+' -> '+e.detail.destination.index);
+			console.log('Element Index: '+e.detail.origin.elementIndex+' -> '+e.detail.destination.elementIndex);
+                        
+                        var itemId = e.detail.item.id;
+                        var originTestcaseId = e.detail.origin.container.id;
+                        var destinationTestcaseId = e.detail.destination.container.id;
+                        
+                        console.log('itemId: ',itemId);
+                        console.log('originTestcaseId: ',originTestcaseId);
+                        console.log('destinationTestcaseId: ',destinationTestcaseId);
+                        
+                        var params = 'itemId=' + itemId + '&originTestcaseId=' + originTestcaseId + '&destinationTestcaseId=' + destinationTestcaseId + '&originIndex=' + e.detail.origin.index + '&destinationIndex=' + e.detail.destination.index;
+                        console.log('params = ',params);
+                        e.detail.item.hidden = true;
+                        xhttp = new XMLHttpRequest();
+                        xhttp.open('POST', 'bind_testcase_module.php', true);
+                        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                        xhttp.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {
+                                //alert(xhttp.responseText);
+                                console.log('xhttp.responseText', xhttp.responseText);
+                                //document.getElementById('" . $return_tag_id . "').innerHTML = this.responseText;
+                            }
+                        };
+                        xhttp.send(params);
 		});
                 
                 sortable('.js-sortable-steps', {
-		  forcePlaceholderSize: true,
+		  //forcePlaceholderSize: true,
 		  copy: true,
-		  acceptFrom: false,
-		  placeholderClass: 'mb1 bg-navy border border-yellow',
+                  placeholderClass: 'mb1 bg-navy border border-yellow',";
+        $testcaselist = $product->get_testcases();
+        if(count($testcaselist)>=1)
+        {  
+            echo "acceptFrom: '";
+            for ($x = 0; $x < count($testcaselist) -1 ; $x++)
+            {
+                $testcase = $testcaselist[$x];
+                echo ".js-sortable-connected-".$testcase->get_id().", ";
+            }
+            echo ".js-sortable-connected-".$testcase->get_id()."',";
+        }
+        else 
+        {
+            echo "acceptFrom: false,";
+        }
+    
+        echo "  
+		});
+                
+                document.querySelector('.js-sortable-steps').addEventListener('sortupdate', function(e){
+			console.log('step-Sortupdate: ', e.detail);
+			console.log('Container: ', e.detail.origin.container, ' -> ', e.detail.destination.container);
+			console.log('Index: '+e.detail.origin.index+' -> '+e.detail.destination.index);
+			console.log('Element Index: '+e.detail.origin.elementIndex+' -> '+e.detail.destination.elementIndex);
+                        
+                        var itemId = e.detail.item.id;
+                        var originTestcaseId = e.detail.origin.container.id;
+                        var destinationTestcaseId = e.detail.destination.container.id;
+                        
+                        console.log('itemId: ',itemId);
+                        console.log('originTestcaseId: ',originTestcaseId);
+                        console.log('destinationTestcaseId: ',destinationTestcaseId);
+                        
+                        var params = 'itemId=' + itemId + '&originTestcaseId=' + originTestcaseId + '&destinationTestcaseId=' + destinationTestcaseId + '&originIndex=' + e.detail.origin.index + '&destinationIndex=' + e.detail.destination.index;
+                        console.log('params = ',params);
+                        e.detail.item.hidden = true;
+                        xhttp = new XMLHttpRequest();
+                        xhttp.open('POST', 'bind_testcase_module.php', true);
+                        xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                        xhttp.onreadystatechange = function() {
+                            if (this.readyState == 4 && this.status == 200) {
+                                //alert(xhttp.responseText);
+                                console.log('xhttp.responseText', xhttp.responseText);
+                                //document.getElementById('" . $return_tag_id . "').innerHTML = this.responseText;
+                            }
+                        };
+                        xhttp.send(params);
 		});
                 
 		sortable('.js-sortable-copy-target', {
@@ -196,6 +291,16 @@ echo "<script>";
 			placeholderClass: 'border border-white mb1',
                         hoverClass: 'bg-yellow',
 		});
+                
+                /*$('#results').on('click', '.searchterm', function(event){
+                    console.log('clicked');
+                });*/
+                
+                $('li.searchterm').on('click',function() {    
+                    console.log('testing');
+                    console.log(this);
+                });
+
 		// buttons to add items and reload the list
 		// separately to showcase issue without reload
 		/*document.querySelector('.js-add-item-button').addEventListener('click', function(){
@@ -227,9 +332,10 @@ echo "<script>";
 		});*/
 
 		// Destroy & Init
-		/*document.querySelector('.js-destroy').addEventListener('click', function(){
-			sortable('.js-sortable-buttons', 'destroy');
-		});*/
+		document.querySelector('.js-destroy').addEventListener('click', function(){
+                        console.log('Destroy clicked!');
+			sortable('.js-sortable-modules', 'disable');
+		});
 		/*document.querySelector('.js-init').addEventListener('click', function(){
 			sortable('.js-sortable-buttons', {
 				forcePlaceholderSize: true,
