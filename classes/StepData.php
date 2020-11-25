@@ -61,8 +61,8 @@ class StepData
     function save() {
         if($this->id > 0) {
             $sql = "UPDATE stepdata SET name=?, value=?, Step_id=? WHERE id=?";
-            $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->value, $this->id])->affected_rows;
-            if (count($affected_rows) < 1) {
+            $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->value, $this->stepid, $this->id])->affected_rows;
+            if ($affected_rows < 1) {
                 die("Could not persist stepdata with name = " . $this->name . PHP_EOL .
                     "Error message = " . $this->con->error);
             }

@@ -31,3 +31,8 @@ if ($name != "" && $stepid != 0) { //hvis der er et navn og det er associeret ti
     $stepdata = new StepData($id, $con);
     $stepdata->update($name, $value, $stepid);
 }
+
+echo "stepdataId = ". $id . PHP_EOL;
+echo "stepId = ". $stepid . PHP_EOL;
+echo "name = ". $name . PHP_EOL;
+echo "value = ". $value . PHP_EOL;

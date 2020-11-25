@@ -22,12 +22,19 @@ function draw_add_li (Step $step, $postPrefix) {
                 </li>";
 }
 
-function draw_add_stepdata($phpfile, $stepid)
+function draw_add_stepdata_dialog($phpfile)
+{
+    $returnstr = draw_addedit_stepdata_dialog_script($phpfile);
+    $returnstr .=  draw_addedit_stepdata_dialog_form();
+    return $returnstr;
+}
+    
+function draw_addedit_stepdata_dialog_script($phpfile)
 {
     $returnstr = "<script>
 /** add stepdata dialog **/
 $( function addStepDataDialog() {
-    var dialog, form,
+    var stepdatadialog, form,
 
         // From http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#e-mail-state-%28type=email%29
         /*emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,*/
@@ -90,7 +97,7 @@ if ( o.val() ==  0 || o.val() ==  null) {
             var n = name.val();
             var v = value.val();
             var s = stepid.val();
-            dialog.dialog( 'close' );
+            stepdatadialog.dialog( 'close' );
             persistStepdata(i, n, v, s);
         }
         return valid;
@@ -98,37 +105,31 @@ if ( o.val() ==  0 || o.val() ==  null) {
 
     function persistStepdata(i, n, v, s) {
         var xhttp;
-        if (n == '') {
-            document.getElementById('" . $return_tag_id . "').innerHTML = '';
-            return;
-        }
         var params = 'id=' + i + '&name=' + n + '&value=' + v + '&stepid=' + s;
-        alert('params = ' + params);
+        //alert('params = ' + params);
         xhttp = new XMLHttpRequest();
         xhttp.open('POST', '" . $phpfile . "', true);
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
                 // alert(xhttp.responseText);
-                //document.getElementById('" . $return_tag_id . "').innerHTML = this.responseText;
                 console.log('xhttp.responseText', xhttp.responseText);
-                location.reload();
+                location.reload(false);
             }
         };
         xhttp.send(params);
         
     }
 
-
-    dialog = $( '#stepdata-dialog-form' ).dialog({
+    stepdatadialog = $( '#stepdata-dialog-form' ).dialog({
         autoOpen: false,
         height: 500,
         width: 620,
         modal: true,
         buttons: {
-            'Opret stepdata': addToStepdata,
+            'Gem': addToStepdata,
             Cancel: function() {
-                dialog.dialog( 'close' );
+                stepdatadialog.dialog( 'close' );
             }
         },
         close: function() {
@@ -136,26 +137,49 @@ if ( o.val() ==  0 || o.val() ==  null) {
             allFields.removeClass( 'ui-state-error' );
         }
     });
-
-    form = dialog.find( 'form' ).on( 'submit', function( event ) {
+    //dialog 
+    form = stepdatadialog.find( 'form' ).on( 'submit', function( event ) {
         event.preventDefault();
         addToStepdata();
     });
 
     $( '#create-stepdata' ).button().on( 'click', function() {
-        dialog.dialog( 'open' );
+        stepdatadialog.dialog( 'open' );
     });
 
-    function edit_stepdata(old_name, old_description, header){
-        $('#empId').val(empId);
-        $('#fieldId').val(fieldId);
-        $('#fieldName').val(name);
-        $('#fieldValue').val(value);
-        $('#customFieldDialog').dialog('open');
+    
+} );
+
+    function add_stepdata(stepid, header){
+        //console.log('add_stepdata: stepid =' + stepid + ' header = ' + header);
+        //console.log($( '#stepdata-dialog-form' ));
+        $( '#stepdata-dialog-form').dialog({ title: header });
+        $('#stepdata-name').val('');
+        $('#stepdata-value').val('');
+        $('#stepdata-id').val(0);
+        $('#step-id').val(stepid);
+        $( '#stepdata-dialog-form' ).dialog('open');
         return false;
     }
-} );
-</script>
+    
+    function edit_stepdata(stepid, stepdataid, header, name, value){
+        console.log('edit_stepdata: stepid =' + stepid + ' header = ' + header);
+        console.log($( '#stepdata-dialog-form' ));
+        $( '#stepdata-dialog-form').dialog({ title: header });
+        $('#stepdata-name').val(name);
+        $('#stepdata-value').val(value);
+        $('#stepdata-id').val(stepdataid);
+        $('#step-id').val(stepid);
+        $( '#stepdata-dialog-form' ).dialog('open');
+        return false;
+    }
+</script>";
+return $returnstr;
+}
+
+function draw_addedit_stepdata_dialog_form()
+{
+    $returnstr = "
 <div id='stepdata-dialog-form' title='Opret nyt stepdata'>
   <p class='validateTips'>Name og value skal udfyldes.</p>
  
@@ -166,13 +190,25 @@ if ( o.val() ==  0 || o.val() ==  null) {
       <label for='stepdata-value'>Value:</label>
       <textarea id='stepdata-value' name='stepdata-value' rows='10' cols='70'></textarea>
       <input type='hidden' name='id' id='stepdata-id' value='0' >
-      <input type='hidden' name='stepid' id='step-id' value='".$stepid."' >
+      <input type='hidden' name='stepid' id='step-id' value='0' >
       
       <!-- Allow form submission with keyboard without duplicating the dialog button -->
       <input type='submit' tabindex='-1' style='position:absolute; top:-10000px'>
     </fieldset>
   </form>
-</div>
-<button class='btn sqaure_bt' id='create-stepdata'>Opret stepdata</button>";
-    return $returnstr;
+</div>";
+return $returnstr;
+}
+
+function draw_opretstepdata_button($stepid)
+{
+    $header = "\"Opret stepdata\"";
+    /*class='btn sqaure_bt'*/
+    return "<button id='add-stepdata' onclick='add_stepdata(".$stepid.", ".$header.")'>Opret stepdata</button>";
+}
+
+function draw_editstepdata_button($stepid, $stepdataid, $name, $value)
+{
+    $header = "\"Edit stepdata\"";
+    return "<button id='edit-stepdata' onclick='edit_stepdata(".$stepid.", ".$stepdataid.", ".$header.", \"".$name."\", \"".$value."\")'>Rediger</button>";
 }

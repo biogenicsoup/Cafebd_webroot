@@ -33,3 +33,4 @@ if ($name != "" && $productid != 0) { //hvis der er et navn og det er associeret
     $step = new Step($id, $con);
     $step->Update($name, $function, (int) $productid);
 }
+
