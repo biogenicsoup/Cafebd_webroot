@@ -32,6 +32,7 @@ echo draw_add_stepdata_dialog('addEditStepData.php');
 echo "
     <section class='mb3 mx-auto col col-12'>
         <div class='p3 bg-white black col col-6'>
+            <input id='testcaseSearch' type='text' placeholder='Search testcase..'>
             <h2 class='h3 m0'>Træk et step eller et module over i din testcase. </h2>
                 <div id='accordion' class='ui-accordion ui-widget ui-helper-reset ui-sortable' role='tablist'>";
 
@@ -39,7 +40,7 @@ $product = new Product($productid, $con);
 foreach ($product->get_testcases() as $testcase)
 {
     echo"
-                    <div class='group'>
+                    <div class='group searchabletestcase'>
                         <h3>" . $testcase->get_name() . "</h3>
                         <div><p>Description: " . $testcase->get_description() . "</p>
                             <ul class='p2 border maroon border-maroon js-sortable-connected-" . $testcase->get_id() . " list flex flex-column list-reset' id='".$testcase->get_id()."' aria-dropeffect='move'>";
@@ -72,13 +73,13 @@ echo draw_add_testcase('addEditTestCase.php', $productid, $con);
 echo"   </div>";
 echo"				
 	<div class='p3 bg-orange white col col-6'>
-            
+            <input id='moduleSearch' type='text' placeholder='Search module..'>
             <ul class='js-sortable-modules list flex flex-column list-reset' id='0' aria-dropeffect='move'>";
 foreach ($product->get_modules() as $module)
 {
     if($module->get_hidden() != 1) // not hidden => draw the module
     {
-        echo "  <li class='p1 mb1 border border-white white bg-orange' id='m-".$module->get_id()."' role='option' aria-grabbed='false'>
+        echo "  <li class='p1 mb1 border border-white white bg-orange searchablemodule' id='m-".$module->get_id()."' role='option' aria-grabbed='false'>
                     <div class='mb1 js-handle px1' draggable='true'>".$module->get_name()."</div>
                     <ul class='js-sortable-inner-connected list flex flex-column list-reset m0 py1' aria-dropeffect='move'>";
             foreach ($module->get_steps() as $step) {
@@ -89,11 +90,11 @@ foreach ($product->get_modules() as $module)
     }
 }
 echo "      </ul>
-    
+            <input id='stepSearch' type='text' placeholder='Search step..'>
             <ul class='js-sortable-steps list flex flex-column list-reset' id='0' aria-dropeffect='move'>";
 foreach ($product->get_steps() as $step)
 {
-    echo "      <li class='p1 mb1 blue bg-green js-handle px1 expandable' draggable='true' role='option' id='s-".$step->get_id()."' aria-grabbed='false'>".$step->get_name() ."
+    echo "      <li class='p1 mb1 blue bg-green js-handle px1 expandable searchablestep' draggable='true' role='option' id='s-".$step->get_id()."' aria-grabbed='false'>".$step->get_name() ."
                     <div class='stepdata' id='d-".$step->get_id()."' style='display: none'>
                         <ul>";
                             foreach ($step->get_stepData() as $stepdata) {
@@ -106,16 +107,12 @@ foreach ($product->get_steps() as $step)
                             echo "</li>";
     echo "              </ul>
                     </div>
-                    <button>Edit</button>
-                    <button>Copy</button>
+                    <button class='btn main_bt'>E</button>
+                    <button class='btn main_bt'>C</button>
                 </li>";                                 
 }
 echo "      </ul>";
             echo draw_add_step('addEditStep.php', $productid, $con);
-            echo "<div class='center py1 ml4'>
-						<button class='js-destroy button blue bg-white'>Destroy</button>
-						<button class='js-init button blue bg-white'>Init</button>
-					</div>";
 echo "  </div>
     </section>";
 
@@ -321,6 +318,44 @@ window.addEventListener('load', function(){
             document.getElementById(divid).style.display = 'block';            
         }
     });
+});
+
+$(document).ready(function(){
+  $('#stepSearch').on('keyup', function() {
+    var value = $(this).val().toLowerCase();
+    $('li.searchablestep').filter(function() {
+        if( $(this).text().toLowerCase().indexOf(value) > -1){ 
+            $(this).show('slow');
+        }
+        else {
+            $(this).hide('slow');
+        }
+      //$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  $('#moduleSearch').on('keyup', function() {
+    var value = $(this).val().toLowerCase();
+    $('li.searchablemodule').filter(function() {
+        if( $(this).text().toLowerCase().indexOf(value) > -1){ 
+            $(this).show('slow');
+        }
+        else {
+            $(this).hide('slow');
+        }
+        //$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+  $('#testcaseSearch').on('keyup', function() {
+    var value = $(this).val().toLowerCase();
+    $('div.searchabletestcase').filter(function () {
+        if( $(this).text().toLowerCase().indexOf(value) > -1){ 
+            $(this).show('slow');
+        }
+        else {
+            $(this).hide('slow');
+        }
+    });
+  });
 });
 	</script>";
 

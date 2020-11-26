@@ -204,11 +204,11 @@ function draw_opretstepdata_button($stepid)
 {
     $header = "\"Opret stepdata\"";
     /*class='btn sqaure_bt'*/
-    return "<button id='add-stepdata' onclick='add_stepdata(".$stepid.", ".$header.")'>Opret stepdata</button>";
+    return "<button id='add-stepdata'  class='btn main_bt' onclick='add_stepdata(".$stepid.", ".$header.")'>Opret stepdata</button>";
 }
 
 function draw_editstepdata_button($stepid, $stepdataid, $name, $value)
 {
     $header = "\"Edit stepdata\"";
-    return "<button id='edit-stepdata' onclick='edit_stepdata(".$stepid.", ".$stepdataid.", ".$header.", \"".$name."\", \"".$value."\")'>Rediger</button>";
+    return "<button id='edit-stepdata' class='btn main_bt' onclick='edit_stepdata(".$stepid.", ".$stepdataid.", ".$header.", \"".$name."\", \"".$value."\")'>Rediger</button>";
 }
