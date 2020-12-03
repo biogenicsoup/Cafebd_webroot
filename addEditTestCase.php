@@ -12,8 +12,8 @@ include_once 'components.php';
  */
 
 $id = 0;
-if (isset($_POST['id'])) {
-    $moduleId = $_POST['id'];
+if (isset(filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT))) {
+    $name = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
 }
 
 $name = "";
@@ -22,35 +22,40 @@ $testrailid = 0;
 $testtypeid = "";
 $productid = 0;
 
-if (isset($_POST['name'])) {
-    $name = $_POST['name'];
+if (isset(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING))) {
+    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);//FILTER_SANITIZE_NUMBER_INT)
 }
 
-if (isset($_POST['description'])) {
-    $description = $_POST['description'];
+if (isset(filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING))) {
+    $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);//FILTER_SANITIZE_NUMBER_INT)
 }
 
-if (isset($_POST['testrailid'])) {
-    $testrailid = $_POST['testrailid'];
+if (isset(filter_input(INPUT_POST, 'testrailid', FILTER_SANITIZE_STRING))) {
+    $testrailid = filter_input(INPUT_POST, 'testrailid', FILTER_SANITIZE_STRING);//FILTER_SANITIZE_NUMBER_INT)
 }
 
-if (isset($_POST['testtypeid'])) {
-    $testtypeid = $_POST['testtypeid'];
+if (isset(filter_input(INPUT_POST, 'testtypeid', FILTER_SANITIZE_NUMBER_INT))) {
+    $testtypeid = filter_input(INPUT_POST, 'testtypeid', FILTER_SANITIZE_NUMBER_INT);
 }
 
-if (isset($_POST['productid'])) {
-    $productid = $_POST['productid'];
+if (isset(filter_input(INPUT_POST, 'productid', FILTER_SANITIZE_NUMBER_INT))) {
+    $productid = filter_input(INPUT_POST, 'productid', FILTER_SANITIZE_NUMBER_INT);
 }
+
+echo "testcaseId = ". $id . PHP_EOL;
+echo "testcaseName = ". $name . PHP_EOL;
+echo "testcaseDescription = ". $description . PHP_EOL;
+echo "testrailID = ". $testrailid . PHP_EOL;
+echo "testTypeID = ". $testtypeid . PHP_EOL;
+echo "productId = ". $productid . PHP_EOL;
 
 if ($name != "" && $productid != 0) { //hvis der er et navn og det er associeret til et produkt skal det oprettet
     $testcase = new TestCase($id, $con);
     $testcase->Update($name, $description, $testrailid, $testtypeid, $productid);
 }
 
-$product = new Product($productid, $con);
-echo draw_testcase_accordion($product->get_testcases());
+/*$product = new Product($productid, $con);
+echo draw_testcase_accordion($product->get_testcases());*/
 
-/*$sql = "SELECT m.id, m.name, m.description FROM Module m ORDER BY m.name";
-$module_list = prepared_select($con, $sql, [])->fetch_all(MYSQLI_ASSOC);
-accordion($module_list, "dialogTest.php"); // link to self just for test*/
+
 

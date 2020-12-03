@@ -28,6 +28,7 @@ echo "<script>
 	} );
 	</script>";    
 echo draw_add_stepdata_dialog('addEditStepData.php');
+echo draw_add_step_dialog('addEditStep.php', $productid, $con);
 
 echo "
     <section class='mb3 mx-auto col col-12'>
@@ -94,12 +95,15 @@ echo "      </ul>
             <ul class='js-sortable-steps list flex flex-column list-reset' id='0' aria-dropeffect='move'>";
 foreach ($product->get_steps() as $step)
 {
-    echo "      <li class='p1 mb1 blue bg-green js-handle px1 expandable searchablestep' draggable='true' role='option' id='s-".$step->get_id()."' aria-grabbed='false'>".$step->get_name() ."
-                    <div class='stepdata' id='d-".$step->get_id()."' style='display: none'>
-                        <ul>";
+    echo "      <li class='p1 mb1 blue bg-green js-handle px1 expandable searchablestep' draggable='true' role='option' id='s-".$step->get_id()."' aria-grabbed='false'>".$step->get_name() ." ";
+    echo            draw_editstep_button($step->get_id(), $step->get_name(), $step->get_function(), $productid, 'E');                
+    echo            draw_clonestep_button($step->get_id(), $step->get_name(), $step->get_function(), $productid, 'C');     
+    echo "          <div class='stepdata' id='d-".$step->get_id()."' style='display: none'>
+                        <ul>
+                            <li>Function = ".$step->get_function()."</li>";
                             foreach ($step->get_stepData() as $stepdata) {
                                 echo "<li>Name = ". $stepdata->get_name() ." : Value = " . $stepdata->get_value();
-                                echo draw_editstepdata_button($step->get_id(), $stepdata->get_id(), $stepdata->get_name(), $stepdata->get_value());
+                                echo draw_editstepdata_button($step->get_id(), $stepdata->get_id(), $stepdata->get_name(), $stepdata->get_value(), 'Rediger');
                                 echo "</li>";
                             }
                             echo "<li>";
@@ -107,12 +111,10 @@ foreach ($product->get_steps() as $step)
                             echo "</li>";
     echo "              </ul>
                     </div>
-                    <button class='btn main_bt'>E</button>
-                    <button class='btn main_bt'>C</button>
                 </li>";                                 
 }
 echo "      </ul>";
-            echo draw_add_step('addEditStep.php', $productid, $con);
+           echo draw_opretstep_button($productid, 'opret step');
 echo "  </div>
     </section>";
 
@@ -290,21 +292,6 @@ echo "<script>";
                     }
                 });
                 
-/*document.addEventListener('DOMContentLoaded', function(event){
-    console.log('DOMContentLoaded');
-    console.log(event);
-    $.each(sessionStorage, function(key, value){
-        
-        if (value === 'expanded')
-        {
-            console.log('key = ' + key + ' value = ' + value);
-            var divid = 'd' + key.substring(8);
-            console.log('divid = ' + divid);
-            document.getElementById(divid).style.display = 'block';            
-        }
-    });
-});*/
-
 window.addEventListener('load', function(){
    console.log('PAGE loaded');
     console.log(event);

@@ -34,14 +34,12 @@ function draw_addedit_stepdata_dialog_script($phpfile)
     $returnstr = "<script>
 /** add stepdata dialog **/
 $( function addStepDataDialog() {
-    var stepdatadialog, form,
+    var stepdatadialog, stepdataform,
 
-        // From http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#e-mail-state-%28type=email%29
-        /*emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,*/
         id = $( '#stepdata-id' ),
         name = $( '#stepdata-name' ),
         value = $( '#stepdata-value' ),
-        stepid = $( '#step-id' ),
+        stepid = $( '#stepdata-step-id' ),
         allFields = $( [] ).add(id).add(name).add(value).add(stepid),
         tips = $( '.validateTips' );
 
@@ -133,12 +131,12 @@ if ( o.val() ==  0 || o.val() ==  null) {
             }
         },
         close: function() {
-            form[ 0 ].reset();
+            stepdataform[ 0 ].reset();
             allFields.removeClass( 'ui-state-error' );
         }
     });
     //dialog 
-    form = stepdatadialog.find( 'form' ).on( 'submit', function( event ) {
+    stepdataform = stepdatadialog.find( 'form' ).on( 'submit', function( event ) {
         event.preventDefault();
         addToStepdata();
     });
@@ -146,8 +144,6 @@ if ( o.val() ==  0 || o.val() ==  null) {
     $( '#create-stepdata' ).button().on( 'click', function() {
         stepdatadialog.dialog( 'open' );
     });
-
-    
 } );
 
     function add_stepdata(stepid, header){
@@ -157,7 +153,7 @@ if ( o.val() ==  0 || o.val() ==  null) {
         $('#stepdata-name').val('');
         $('#stepdata-value').val('');
         $('#stepdata-id').val(0);
-        $('#step-id').val(stepid);
+        $('#stepdata-step-id').val(stepid);
         $( '#stepdata-dialog-form' ).dialog('open');
         return false;
     }
@@ -169,7 +165,7 @@ if ( o.val() ==  0 || o.val() ==  null) {
         $('#stepdata-name').val(name);
         $('#stepdata-value').val(value);
         $('#stepdata-id').val(stepdataid);
-        $('#step-id').val(stepid);
+        $('#stepdata-step-id').val(stepid);
         $( '#stepdata-dialog-form' ).dialog('open');
         return false;
     }
@@ -190,7 +186,7 @@ function draw_addedit_stepdata_dialog_form()
       <label for='stepdata-value'>Value:</label>
       <textarea id='stepdata-value' name='stepdata-value' rows='10' cols='70'></textarea>
       <input type='hidden' name='id' id='stepdata-id' value='0' >
-      <input type='hidden' name='stepid' id='step-id' value='0' >
+      <input type='hidden' name='stepid' id='stepdata-step-id' value='0' >
       
       <!-- Allow form submission with keyboard without duplicating the dialog button -->
       <input type='submit' tabindex='-1' style='position:absolute; top:-10000px'>
@@ -207,8 +203,8 @@ function draw_opretstepdata_button($stepid)
     return "<button id='add-stepdata'  class='btn main_bt' onclick='add_stepdata(".$stepid.", ".$header.")'>Opret stepdata</button>";
 }
 
-function draw_editstepdata_button($stepid, $stepdataid, $name, $value)
+function draw_editstepdata_button($stepid, $stepdataid, $name, $value, $buttontext)
 {
     $header = "\"Edit stepdata\"";
-    return "<button id='edit-stepdata' class='btn main_bt' onclick='edit_stepdata(".$stepid.", ".$stepdataid.", ".$header.", \"".$name."\", \"".$value."\")'>Rediger</button>";
+    return "<button id='edit-stepdata' class='btn main_bt' onclick='edit_stepdata(".$stepid.", ".$stepdataid.", ".$header.", \"".$name."\", \"".$value."\")'>".$buttontext."</button>";
 }

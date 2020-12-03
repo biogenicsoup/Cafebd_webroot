@@ -8,26 +8,27 @@ include 'components.php';
  */
 
 $id = 0;
-if (isset($_POST['id'])) {
-    $moduleId = $_POST['id'];
-}
-
 $name = "";
 $description = "";
 $productid = 0;
 
-if (isset($_POST['name'])) {
-    $name = $_POST['name'];
-    echo "<script>alert('name = " . $name . "');</script>";
+if (isset(filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT))) {
+    $id = filter_input(INPUT_POST, 'id', FILTER_SANITIZE_NUMBER_INT);
+}
+if (isset(filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING))) {
+    $name = filter_input(INPUT_POST, 'name', FILTER_SANITIZE_STRING);//FILTER_SANITIZE_NUMBER_INT)
+}
+if (isset(filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING))) {
+    $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_STRING);//FILTER_SANITIZE_NUMBER_INT)
+}
+if (isset(filter_input(INPUT_POST, 'productid', FILTER_SANITIZE_NUMBER_INT))) {
+    $productid = filter_input(INPUT_POST, 'productid', FILTER_SANITIZE_NUMBER_INT);
 }
 
-if (isset($_POST['description'])) {
-    $description = $_POST['description'];
-}
-
-if (isset($_POST['productid'])) {
-    $productid = $_POST['productid'];
-}
+echo "moduleId = ". $id . PHP_EOL;
+echo "moduleName = ". $name . PHP_EOL;
+echo "moduleDescription = ". $description . PHP_EOL;
+echo "productId = ". $productid . PHP_EOL;
 
 
 if ($name != "" && $productid != 0) { //hvis der er et navn og det er associeret til et produkt skal det oprettet

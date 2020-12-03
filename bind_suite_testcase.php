@@ -23,6 +23,10 @@ if (isset($_POST['destinationSuiteId'])) {
     $destinationSuiteId = $_POST['destinationSuiteId'];
 }
 
+echo "stepId = ". $testcaseId . PHP_EOL;
+echo "originSuiteId = ". $originSuiteId . PHP_EOL;
+echo "destinationSuiteId = ". $destinationSuiteId . PHP_EOL;
+
 if ($testcaseId > 0 ) { 
     $testcase = new TestCase($testcaseId, $con);
     if($originSuiteId > 0){

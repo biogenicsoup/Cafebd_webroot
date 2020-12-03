@@ -81,20 +81,26 @@ function draw_step_div_with_addData(Step $step)
     return $returnstr;
 }
 
-function draw_add_step($phpfile, $productid, $con)
+function draw_add_step_dialog($phpfile, $productid, $con)
+{
+    $returnstr = draw_addedit_step_dialog_script($phpfile);
+    $returnstr .=  draw_addedit_step_dialog_form($productid, $con);
+    return $returnstr;
+}
+
+function draw_addedit_step_dialog_script($phpfile)
 {
     $returnstr =  "<script>
 /** add module dialog **/
 $( function addStepDialog() {
-    var dialog, form,
-
-        // From http://www.whatwg.org/specs/web-apps/current-work/multipage/states-of-the-type-attribute.html#e-mail-state-%28type=email%29
-        /*emailRegex = /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,*/
+    var dialog, 
+        form,																																																																			 
         id = $( '#step-id' ),
         name = $( '#step-name' ),
         func = $( '#step-function' ),
-        product = $( '#product-select' ),
-        allFields = $( [] ).add(id).add( name ).add( func ).add(product),
+        product = $( '#step-product-select' ),
+        clonefromid = $('#clonefrom-id'),
+        allFields = $( [] ).add(id).add( name ).add( func ).add(product).add( clonefromid ),
         tips = $( '.validateTips' );
 
     function updateTips( t ) {
@@ -139,19 +145,24 @@ $( function addStepDialog() {
             var n = name.val();
             var f = func.val();
             var p = product.val();
-            dialog.dialog( 'close' );
-            persistStep(i, n, f, p);
+            var c = 0;
+            if($('#step-clonedata-checkbox').prop('checked')) {
+                c = clonefromid.val();
+            } 
+            stepdialog.dialog( 'close' );
+            persistStep(i, n, f, p, c);
         }
         return valid;
     }
 
-    function persistStep(i, n, f, p) {
+    function persistStep(i, n, f, p, c) {
         var xhttp;
         if (n == '') {
             document.getElementById('".$return_tag_id."').innerHTML = '';
             return;
         }
-        var params = 'id=' + i + '&name=' + n + '&function=' + f + '&productid=' + p;
+        var params = 'id=' + i + '&name=' + n + '&function=' + f + '&productid=' + p + '&clonefromid=' + c;
+        console.log(' params = ' +params);
         xhttp = new XMLHttpRequest();
         xhttp.open('POST', '".$phpfile."', true);
         xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
@@ -160,7 +171,7 @@ $( function addStepDialog() {
                 /*alert(xhttp.responseText);*/
                 console.log('xhttp.responseText', xhttp.responseText);
                 //document.getElementById('".$return_tag_id."').innerHTML = this.responseText;
-                location.reload();
+                //location.reload();
             }
         };
         xhttp.send(params);
@@ -168,54 +179,110 @@ $( function addStepDialog() {
     }
 
 
-    dialog = $( '#step-dialog-form' ).dialog({
+    stepdialog = $( '#step-dialog-form' ).dialog({
         autoOpen: false,
-        height: 300,
+        height: 310,
         width: 350,
         modal: true,
-        buttons: {
-            'Opret step': addStep,
-            Cancel: function() {
-                dialog.dialog( 'close' );
+        buttons: [
+            { 
+                text: 'Opret step',
+                id: 'stepdialog-ok-button',
+                click: function(){
+                    addStep();
+                }   
+            },
+            {
+                id: 'stepdialog-cancel-button',
+                text: 'Cancel',
+                click: function () {
+                    $(this).dialog('close');
+                }
             }
-        },
+        ],
         close: function() {
             form[ 0 ].reset();
             allFields.removeClass( 'ui-state-error' );
         }
     });
 
-    form = dialog.find( 'form' ).on( 'submit', function( event ) {
+    form = stepdialog.find( 'form' ).on( 'submit', function( event ) {
         event.preventDefault();
         addStep();
     });
 
     $( '#create-step' ).button().on( 'click', function() {
-        dialog.dialog( 'open' );
-    });
-
-    function edit_module(old_name, old_description, header){
-        $('#empId').val(empId);
-        $('#fieldId').val(fieldId);
-        $('#fieldName').val(name);
-        $('#fieldValue').val(value);
-        $('#customFieldDialog').dialog('open');
-        return false;
-    };
+        stepdialog.dialog( 'open' );
+    });														 
+	  
 } );
-</script>
-<div id='step-dialog-form' title='Opret nyt modul'>
-  <p class='validateTips'>Name og Description skal udfyldes.</p>
+    function add_step(productid, header){
+        console.log('add_step: productid =' + productid + ' header = ' + header);
+        console.log($( '#step-dialog-form' ));
+        $('#step-dialog-form').dialog({ title: header });
+        $('#step-name').val('');
+        $('#step-function').val('');
+        $('#step-id').val(0);
+        $('#step-product-select').val(productid);
+        $('#stepdialog-ok-button').html('Add step');
+        $('#step-clonedata-div').hide(); 
+        $('#step-clonedata-checkbox').prop('checked', false);
+        $('#step-dialog-form').dialog('open');
+        return false;
+    }
+    
+    function edit_step(stepid, name, f, productid, header){
+        console.log('edit_step: productid =' + productid + ' header = ' + header);
+        //console.log($( '#step-dialog-form' ));
+         console.log($('#stepdialog-ok-button'));
+        $('#step-dialog-form').dialog({ title: header });
+        $('#step-name').val(name);
+        $('#step-function').val(f);
+        $('#step-id').val(stepid);
+        $('#step-product-select').val(productid);
+        $('#stepdialog-ok-button').html('Edit step');
+        $('#step-clonedata-div').hide(); 
+        $('#step-clonedata-checkbox').prop('checked', false);
+        $('#step-dialog-form').dialog('open');
+        return false;
+    }
+    
+    function clone_step(stepid, name, f, productid, header){
+        console.log('add_step: productid =' + productid + ' header = ' + header);
+        console.log($( '#step-dialog-form' ));
+        $('#step-dialog-form').dialog({ title: header });
+        $('#step-name').val(name);
+        $('#step-function').val(f);
+        $('#step-id').val(0);
+        $('#clonefrom-id').val(stepid);
+        $('#step-product-select').val(productid);
+        $('#stepdialog-ok-button').html('Clone step');
+        $('#step-clonedata-div').show(); 
+        $('#step-clonedata-checkbox').prop('checked', true);
+        $('#step-dialog-form').dialog('open');
+        return false;
+    }
+    
+</script>";
+return $returnstr;
+}
+
+function draw_addedit_step_dialog_form($productid, $con)
+{
+    $returnstr = "
+<div id='step-dialog-form' title='Opret nyt step'>
+  <p class='validateTips'>Name og Function skal udfyldes.</p>
  
   <form>
     <fieldset>
-      <label for='name'>Name</label>
+      <label for='step-name'>Name</label>
       <input type='text' name='name' id='step-name' value='' class='text ui-widget-content ui-corner-all'>
-      <label for='function'>Function</label>
+      <label for='step-function'>Function</label>
       <input type='text' name='function' id='step-function' value='' class='text ui-widget-content ui-corner-all'>
       <input type='hidden' name='id' id='step-id' value='0' >
-      <select name='product' id='product-select'>";
-
+      <input type='hidden' name='clonefrom-id' id='clonefrom-id' value='0' >
+      <select name='product' id='step-product-select'>";
+      
     $products = new Products($con);
     $productlist = $products->get_products_list();
 
@@ -235,11 +302,35 @@ $( function addStepDialog() {
             }
         }
     }
-    $returnstr .= "</select>   
+    $returnstr .= "</select> 
+      
+      <div id='step-clonedata-div' style='display: none'>
+        <label for='step-clonedata-checkbox'> Kopier data</label>
+        <input type='checkbox' id='step-clonedata-checkbox' name='clonedata' value='true' >
+      </div>
       <!-- Allow form submission with keyboard without duplicating the dialog button -->
       <input type='submit' tabindex='-1' style='position:absolute; top:-10000px'>
     </fieldset>
   </form>
-</div><button class='btn sqaure_bt' id='create-step'>Opret step</button>";
+</div>";
+																		  
     return $returnstr;
 }
+
+function draw_opretstep_button($productid, $buttontext)
+{
+    $header = "Opret step";
+    return "<button id='add-step' class='btn main_bt' onclick='add_step(".$productid.", ".$header.")'>".$buttontext."</button>";
+}
+
+function draw_editstep_button($stepid, $name, $function, $productid, $buttontext)
+{
+    $header = "Edit step";
+    return "<button id='edit-step' class='btn main_bt' onclick='edit_step(".$stepid.", \"".$name."\", \"".$function."\", ".$productid.", \"".$header."\")'>".$buttontext."</button>";
+}  
+
+function draw_clonestep_button($stepid, $name, $function, $productid, $buttontext)
+{
+    $header = "Clone step";
+    return "<button id='edit-step' class='btn main_bt' onclick='clone_step(".$stepid.", \"".$name."\", \"".$function."\", ".$productid.", \"".$header."\")'>".$buttontext."</button>";
+}  

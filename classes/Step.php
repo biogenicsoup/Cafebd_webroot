@@ -36,7 +36,7 @@ class Step
             $this->id = $this->con->insert_id;
         }
         else { //this is an existing module -> update
-            $sql = "UPDATE step SET name=?, function=?, Product_id=? WHERE id=?";
+            $sql = "UPDATE step SET name=?, `function`=?, Product_id=? WHERE id=?";
             $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->function, $this->productid, $this->id])->affected_rows;
         }
         if ($affected_rows < 1) {
@@ -260,7 +260,7 @@ class Step
     }
     function save() {
         if($this->id > 0) {
-            $sql = "UPDATE step SET name=?, function=? WHERE id=?";
+            $sql = "UPDATE step SET name=?, `function`=? WHERE id=?";
             $affected_rows = prepared_query($this->con, $sql, [$this->name, $this->function, $this->id])->affected_rows;
             if (count($affected_rows) < 1) {
                 die("Could not persist step with name = " . $this->name . PHP_EOL .
