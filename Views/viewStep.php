@@ -93,7 +93,7 @@ function draw_addedit_step_dialog_script($phpfile)
     $returnstr =  "<script>
 /** add module dialog **/
 $( function addStepDialog() {
-    var dialog, 
+    var stepdialog, 
         form,																																																																			 
         id = $( '#step-id' ),
         name = $( '#step-name' ),
@@ -334,3 +334,84 @@ function draw_clonestep_button($stepid, $name, $function, $productid, $buttontex
     $header = "Clone step";
     return "<button id='edit-step' class='btn main_bt' onclick='clone_step(".$stepid.", \"".$name."\", \"".$function."\", ".$productid.", \"".$header."\")'>".$buttontext."</button>";
 }  
+
+function confirm_delete_step_dialog($phpfile) {
+    $returnstr = confirm_delete_step_dialog_script($phpfile);
+    $returnstr .= confirm_delete_step_dialog_form ();
+    return $returnstr;
+}
+
+function confirm_delete_step_dialog_script($phpfile) {
+    $returnstr = "
+    <script>
+        $( function() {
+            var dialog, 
+                form,
+                id = $( '#delete-step-id' )
+                
+            dialog = $( '#dialog-confirm-step' ).dialog({
+                autoOpen: false,
+                resizable: false,
+                height: 'auto',
+                width: 400,
+                modal: true,
+                buttons: {
+                    'OK': deleteStep,
+                    Cancel: function() {
+                        $( this ).dialog( 'close' );
+                    }
+                }
+            });
+            
+            function deleteStep() {
+                var i = id.val();
+                dialog.dialog( 'close' );
+            
+                var xhttp;
+                var params = 'id=' + i;
+                console.log(' params = ' +params);
+                xhttp = new XMLHttpRequest();
+                xhttp.open('POST', '".$phpfile."', true);
+                xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        /*alert(xhttp.responseText);*/
+                        console.log('xhttp.responseText', xhttp.responseText);
+                        //location.reload();
+                    }
+                };
+                xhttp.send(params);
+            }
+        } );
+        
+        function confirm_delete_step_dialog(stepid, name) {
+            console.log('confirm_delete_step_dialog: stepid = ' + stepid + ' name = ' + name);
+            var header = 'Er du sikker på at du vil slette step ' + name + '? ';
+            $('#dialog-confirm-step').dialog({ title: header });
+            $('#delete-step-id').val(stepid);
+            $('#dialog-confirm-step').dialog('open');
+            return false;
+        }
+    </script>";
+    return $returnstr;
+}
+
+function confirm_delete_step_dialog_form () {
+    $returnstr = "
+    <div id='dialog-confirm-step' title='Empty the recycle bin?'  style='display: none'>
+        <p>
+            <span class='ui-icon ui-icon-alert' style='float:left; margin:12px 12px 20px 0;'>
+            </span>
+            Steppet og dets tilhørende data vil blive slettet og kan ikke gendannes.
+            </p>
+        <form>
+            <input type='hidden' name='id' id='delete-step-id' value='0' >
+        </form>        
+    </div>";
+    return $returnstr;
+}
+
+function confirm_delete_step_dialog_button($stepid, $name, $buttontext)
+{
+    return "<button id='delete-step' class='btn main_bt' onclick='confirm_delete_step_dialog(".$stepid.", \"".$name."\")'>".$buttontext."</button>";
+} 

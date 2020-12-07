@@ -29,6 +29,7 @@ echo "<script>
 	</script>";    
 echo draw_add_stepdata_dialog('addEditStepData.php');
 echo draw_add_step_dialog('addEditStep.php', $productid, $con);
+echo confirm_delete_step_dialog('deleteStep.php');
 
 echo "
     <section class='mb3 mx-auto col col-12'>
@@ -97,7 +98,8 @@ foreach ($product->get_steps() as $step)
 {
     echo "      <li class='p1 mb1 blue bg-green js-handle px1 expandable searchablestep' draggable='true' role='option' id='s-".$step->get_id()."' aria-grabbed='false'>".$step->get_name() ." ";
     echo            draw_editstep_button($step->get_id(), $step->get_name(), $step->get_function(), $productid, 'E');                
-    echo            draw_clonestep_button($step->get_id(), $step->get_name(), $step->get_function(), $productid, 'C');     
+    echo            draw_clonestep_button($step->get_id(), $step->get_name(), $step->get_function(), $productid, 'C');
+    echo            confirm_delete_step_dialog_button($step->get_id(), $step->get_name(), 'D');
     echo "          <div class='stepdata' id='d-".$step->get_id()."' style='display: none'>
                         <ul>
                             <li>Function = ".$step->get_function()."</li>";
